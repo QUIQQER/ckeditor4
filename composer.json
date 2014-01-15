@@ -1,0 +1,23 @@
+{
+    "name" : "quiqqer/ckeditor4",
+    "type" : "quiqqer-library",
+    "description" : "CKEditor for the QUIQQER CMS - enable the ckeditor for quiqqer",
+    "version" : "dev-master",
+    "license" : "GPL-2.0+",
+
+    "authors" : [{
+        "name": "Henning Leutz",
+        "email": "leutz@pcsg.de",
+        "homepage": "http://www.pcsg.de",
+        "role": "Developer"
+    }],
+
+    "support" : {
+        "email" : "support@pcsg.de"
+    },
+
+    "require": {
+        "quiqqer/quiqqer" : "*",
+        "quiqqer/package-ckeditor4" : "4.*"
+    }
+}
