@@ -14,7 +14,7 @@
 
     "support" : {
         "email" : "support@pcsg.de"
-    },
+    }
 
     "require": {
         "quiqqer/quiqqer" : "*",
