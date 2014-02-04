@@ -23,9 +23,8 @@
 
     "extra": {
         "component": {
-            "files": [
-                "**"
-            ]
+            "files": ["**"],
+            "name": "quiqqer/ckeditor4"
         }
     }
 }
