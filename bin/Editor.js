@@ -51,14 +51,24 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          */
         loadInstance : function(Container, Editor)
         {
-            console.log( 11 );
-
-
-            if ( typeof CKEDITOR === 'undefined' ) {
+            if ( typeof window.CKEDITOR === 'undefined' ) {
                 return;
             }
 
             var Instance = Container;
+
+            if ( !Container.getElement( 'textarea' ) )
+            {
+                var size = Container.getSize(),
+
+                    Instance = new Element('textarea', {
+                        id : this.getId(),
+                        styles : {
+                            height : size.y,
+                            width : size.x - 20
+                        }
+                    }).inject( Container );
+            }
 
             if ( Instance.nodeName != 'TEXTAREA' ) {
                 Instance = Instance.getElement( 'textarea' );
@@ -66,8 +76,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
             var instance = Instance.get( 'id' );
 
-            if ( CKEDITOR.instances[ instance ] ) {
-                CKEDITOR.instances[ instance ].destroy( true );
+            if ( window.CKEDITOR.instances[ instance ] ) {
+                window.CKEDITOR.instances[ instance ].destroy( true );
             }
 
             Editor.setAttribute( 'instancename', instance );
@@ -93,7 +103,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 URL_OPT_DIR +'base/bin/pcsgEditorPlugins/youtube/'
             );
             */
-            CKEDITOR.replace(instance, {
+            window.CKEDITOR.replace(instance, {
                 language     : Locale.getCurrent(),
                 baseHref     : URL_DIR,
                 height       : Instance.getSize().y - 140,
@@ -116,8 +126,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         {
             var Instance = Editor.getInstance();
 
-            if ( CKEDITOR.instances[ Instance.name ] ) {
-                CKEDITOR.instances[ Instance.name ].destroy( true );
+            if ( window.CKEDITOR.instances[ Instance.name ] ) {
+                window.CKEDITOR.instances[ Instance.name ].destroy( true );
             }
         },
 
@@ -126,19 +136,25 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          * if the editor is to be drawn
          *
          * @param {DOMNode} Container
-         * @param {QUI.classes.Editor} Editor
+         * @param {controls/editors/Editor} Editor
          */
         $onDraw : function(Container, Editor)
         {
+            var self = this;
+
             // load CKEDITOR
-            require([
-
-                URL_DIR +'packages/quiqqer/ckeditor4/bin/ckeditor/ckeditor.js'
-
-            ], function(CKE)
+            require([URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js'], function()
             {
+                /*
+                CKEDITOR.editorConfig = function( config ) {
+                    config.language = 'fr';
+                    config.uiColor = '#AADC6E';
+                };
+                */
+
+
                 // CKEditor aufbauen
-                CKEDITOR_BASEPATH = URL_DIR;
+                // CKEDITOR_BASEPATH = URL_DIR;
                 /*
                 CKEDITOR_NEXGAM_TOOLBAR = [
                     { name: 'clipboard', items : [ 'Source', ,'Maximize', '-','pcsg_short', 'Templates','-', 'Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
@@ -165,32 +181,31 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 CKEDITOR_NEXGAM_BODY_CLASS = 'content left content-inner-container wysiwyg';
                 */
 
-                CKEDITOR.on('instanceReady', function(instance)
+                window.CKEDITOR.on('instanceReady', function(instance)
                 {
                     if ( typeof instance.editor === 'undefined' ||
                          typeof instance.editor.name  === 'undefined' ||
-                         instance.editor.name !== this.getAttribute( 'instancename' ) )
+                         instance.editor.name !== Editor.getAttribute( 'instancename' ) )
                     {
                         return;
                     }
 
-                    this.setInstance( instance.editor );
-                    this.fireEvent( 'loaded', [ this, instance.editor ] );
+                    Editor.setInstance( instance.editor );
+                    Editor.fireEvent( 'loaded', [ Editor, instance.editor ] );
 
                     instance.editor.focus();
 
-                }.bind( Editor ));
+                });
 
                 Editor.loadInstance( Container, Editor );
-
-            }.bind( this ));
+            });
         },
 
         /**
          * Editor onSetContent Event
          *
          * @param {String} content
-         * @param {QUI.classes.Editor} Editor
+         * @param {controls/editors/Editor} Editor
          */
         $onSetContent : function(content, Editor)
         {
@@ -203,7 +218,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          * Editor onGetContent Event
          *
          * @param {String} content
-         * @param {QUI.classes.Editor} Editor
+         * @param {controls/editors/Editor} Editor
          */
         $onGetContent : function(Editor)
         {
