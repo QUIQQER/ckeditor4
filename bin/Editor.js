@@ -10,9 +10,10 @@
 define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'require',
-    'controls/editors/Editor'
+    'controls/editors/Editor',
+    'Locale'
 
-], function(require, Editor)
+], function(require, Editor, Locale)
 {
     "use strict";
 
@@ -46,10 +47,13 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          * Load the CKEditor Instance into an Textarea or DOMNode Element
          *
          * @param {DOMNode} Container
-         * @param {QUI.controls.editor.Editor} Editor
+         * @param {controls/editor/Editor} Editor
          */
         loadInstance : function(Container, Editor)
         {
+            console.log( 11 );
+
+
             if ( typeof CKEDITOR === 'undefined' ) {
                 return;
             }
@@ -90,7 +94,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             );
             */
             CKEDITOR.replace(instance, {
-                language     : QUI.Locale.getCurrent(),
+                language     : Locale.getCurrent(),
                 baseHref     : URL_DIR,
                 height       : Instance.getSize().y - 140,
                 width        : Instance.getSize().x + 20,
