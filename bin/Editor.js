@@ -11,7 +11,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'require',
     'controls/editors/Editor',
-    'Locale'
+    'Locale',
+
+    'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
 ], function(require, Editor, Locale)
 {
@@ -55,7 +57,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 return;
             }
 
-            var Instance = Container;
+            var self     = this,
+                Instance = Container;
 
             if ( !Container.getElement( 'textarea' ) )
             {
@@ -103,6 +106,59 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 URL_OPT_DIR +'base/bin/pcsgEditorPlugins/youtube/'
             );
             */
+
+            // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
+            window.CKEDITOR.on( 'dialogDefinition', function( ev )
+            {
+                // Take the dialog name and its definition from the event data.
+                var dialogName = ev.data.name;
+                var dialogDefinition = ev.data.definition;
+
+                /**
+                 * Image dialog
+                 */
+                if ( dialogName == 'image' )
+                {
+                    // Get a reference to the "Link Info" tab.
+                    dialogDefinition.onShow = function()
+                    {
+                        var UrlGroup = this.getContentElement('info', 'txtUrl' )
+                                           .getElement()
+                                           .$;
+
+                        var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
+
+                        if ( !UrlGroup.getElement( '.qui-button' ) )
+                        {
+                            var Button = new Element('button', {
+                                'class' : 'qui-button',
+                                html : '<span class="icon-picture"></span>',
+                                events :
+                                {
+                                    click : function()
+                                    {
+                                        self.openMedia({
+                                            events :
+                                            {
+                                                onSubmit : function(Win, data)
+                                                {
+                                                    UrlInput.value = data.url;
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            }).inject( UrlGroup );
+
+                            Button.getPrevious().setStyles({
+                                'float' : 'left'
+                            });
+                        }
+                    };
+                }
+            });
+
+
             window.CKEDITOR.replace(instance, {
                 language     : Locale.getCurrent(),
                 baseHref     : URL_DIR,

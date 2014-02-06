@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+
+.cke_dialog_contents .qui-button {
+    background: none repeat scroll 0 0 #EDEDED;
+    border: medium none;
+    border-radius: 3px;
+    box-shadow: 0 0 2px #999999;
+    color: #606060;
+    cursor: pointer;
+    float: left;
+    line-height: 30px;
+    margin: 0 5px;
+    padding: 0 10px;
+    position: relative;
+    transition: all 0.2s ease 0s;
+}
+
+.cke_dialog_contents .qui-button-active,
+.cke_dialog_contents .qui-button:active,
+.cke_dialog_contents .qui-button:hover {
+    background: #0069B4;
+    color: #FFFFFF;
+
+            box-shadow: none;
+       -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.cke_dialog_contents .qui-button:hover span {
+    color: #FFFFFF;
+}
+
+.cke_dialog_contents [class^="icon-"],
+.cke_dialog_contents [class*=" icon-"] {
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+}
