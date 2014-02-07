@@ -262,8 +262,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         $imageDialog : function(ev)
         {
             // Take the dialog name and its definition from the event data.
-            var dialogName = ev.data.name;
-            var dialogDefinition = ev.data.definition;
+            var self             = this,
+                dialogName       = ev.data.name,
+                dialogDefinition = ev.data.definition;
 
             /**
              * Image dialog
@@ -272,9 +273,13 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 return ev;
             }
 
+            var oldOnShow = dialogDefinition.onShow;
+
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function()
             {
+                oldOnShow.bind( this )();
+
                 // image button
                 var UrlGroup = this.getContentElement('info', 'txtUrl' )
                                    .getElement()
@@ -390,9 +395,13 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             };
 
 
+            var oldOnShow = dialogDefinition.onShow;
+
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function()
             {
+                oldOnShow.bind( this )();
+
                 var UrlGroup = this.getContentElement('info', 'url' )
                                    .getElement()
                                    .$;
