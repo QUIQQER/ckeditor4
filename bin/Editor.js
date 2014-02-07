@@ -118,6 +118,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             window.CKEDITOR.replace(instance, {
                 language     : Locale.getCurrent(),
                 baseHref     : URL_DIR,
+                basePath     : URL_DIR,
                 height       : Instance.getSize().y - 140,
                 width        : Instance.getSize().x + 20,
                 // toolbar      : CKEDITOR_NEXGAM_TOOLBAR,
@@ -365,11 +366,29 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 dialogDefinition = ev.data.definition;
 
             /**
-             * Image dialog
+             * Link dialog
              */
             if ( dialogName != 'link' ) {
                 return ev;
             }
+
+            // remove protokoll dropdown
+            dialogDefinition.getContents( 'info' ).remove( 'protocol');
+
+            // remove protokoll at insertion
+            var Url       = dialogDefinition.getContents( 'info' ).get( 'url' ),
+                orgCommit = Url.commit;
+
+            Url.commit = function( data )
+            {
+                orgCommit.call( this, data );
+
+                data.url = {
+                    protocol: '',
+                    url: this.getValue()
+                };
+            };
+
 
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function()
@@ -377,7 +396,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 var UrlGroup = this.getContentElement('info', 'url' )
                                    .getElement()
                                    .$;
-
 
                 if ( UrlGroup.getElement( '.qui-button' ) ) {
                     return;
