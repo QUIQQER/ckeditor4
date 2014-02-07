@@ -110,52 +110,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
             window.CKEDITOR.on( 'dialogDefinition', function( ev )
             {
-                // Take the dialog name and its definition from the event data.
-                var dialogName = ev.data.name;
-                var dialogDefinition = ev.data.definition;
-
-                /**
-                 * Image dialog
-                 */
-                if ( dialogName == 'image' )
-                {
-                    // Get a reference to the "Link Info" tab.
-                    dialogDefinition.onShow = function()
-                    {
-                        var UrlGroup = this.getContentElement('info', 'txtUrl' )
-                                           .getElement()
-                                           .$;
-
-                        var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
-
-                        if ( !UrlGroup.getElement( '.qui-button' ) )
-                        {
-                            var Button = new Element('button', {
-                                'class' : 'qui-button',
-                                html : '<span class="icon-picture"></span>',
-                                events :
-                                {
-                                    click : function()
-                                    {
-                                        self.openMedia({
-                                            events :
-                                            {
-                                                onSubmit : function(Win, data)
-                                                {
-                                                    UrlInput.value = data.url;
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                            }).inject( UrlGroup );
-
-                            Button.getPrevious().setStyles({
-                                'float' : 'left'
-                            });
-                        }
-                    };
-                }
+                ev = self.$imageDialog( ev );
+                ev = self.$linkDialog( ev );
             });
 
 
@@ -294,6 +250,169 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             for ( var i = 0, len = params.length; i < len; i++ ) {
                 Instance.insertHtml( "<img src="+ params[ i ].url +" />" );
             }
+        },
+
+        /**
+         * edit the image dialog
+         *
+         * @param {CKEvent} ev
+         * @return {CKEvent} ev
+         */
+        $imageDialog : function(ev)
+        {
+            // Take the dialog name and its definition from the event data.
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+
+            /**
+             * Image dialog
+             */
+            if ( dialogName != 'image' ) {
+                return ev;
+            }
+
+            // Get a reference to the "Link Info" tab.
+            dialogDefinition.onShow = function()
+            {
+                // image button
+                var UrlGroup = this.getContentElement('info', 'txtUrl' )
+                                   .getElement()
+                                   .$;
+
+                var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
+
+                if ( !UrlGroup.getElement( '.qui-button' ) )
+                {
+                    var Button = new Element('button', {
+                        'class' : 'qui-button',
+                        html : '<span class="icon-picture"></span>',
+                        events :
+                        {
+                            click : function()
+                            {
+                                self.openMedia({
+                                    events :
+                                    {
+                                        onSubmit : function(Win, data)
+                                        {
+                                            UrlInput.value = data.url;
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }).inject( UrlGroup );
+
+                    Button.getPrevious().setStyles({
+                        'float' : 'left'
+                    });
+                }
+
+
+                // link button
+                var LinkGroup = this.getContentElement('Link', 'txtUrl' )
+                                   .getElement()
+                                   .$;
+
+
+                if ( LinkGroup.getElement( '.qui-button' ) ) {
+                    return;
+                }
+
+                var LinkInput = LinkGroup.getElement( 'input[type="text"]' );
+
+                var Button = new Element('button', {
+                    'class' : 'qui-button',
+                    html : '<span class="icon-home"></span>',
+                    events :
+                    {
+                        click : function()
+                        {
+                            self.openProject({
+                                events :
+                                {
+                                    onSubmit : function(Win, data) {
+                                        LinkInput.value = data.urls[ 0 ];
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }).inject( LinkGroup );
+
+                var Prev = Button.getPrevious();
+
+                Prev.setStyles({
+                    'float' : 'left',
+                    width : Prev.getSize().x - 100
+                });
+            }
+
+            return ev;
+        },
+
+        /**
+         * edit the link dialog
+         *
+         * @param {CKEvent} ev
+         * @return {CKEvent} ev
+         */
+        $linkDialog : function(ev)
+        {
+            // Take the dialog name and its definition from the event data.
+            var self             = this,
+                dialogName       = ev.data.name,
+                dialogDefinition = ev.data.definition;
+
+            /**
+             * Image dialog
+             */
+            if ( dialogName != 'link' ) {
+                return ev;
+            }
+
+            // Get a reference to the "Link Info" tab.
+            dialogDefinition.onShow = function()
+            {
+                var UrlGroup = this.getContentElement('info', 'url' )
+                                   .getElement()
+                                   .$;
+
+
+                if ( UrlGroup.getElement( '.qui-button' ) ) {
+                    return;
+                }
+
+                var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
+
+
+                UrlInput.setStyles({
+                    'float' : 'left',
+                    width   : UrlInput.getSize().x - 50
+                });
+
+                var Button = new Element('button', {
+                    'class' : 'qui-button',
+                    html : '<span class="icon-home"></span>',
+                    events :
+                    {
+                        click : function()
+                        {
+                            self.openProject({
+                                events :
+                                {
+                                    onSubmit : function(Win, data) {
+                                        UrlInput.value = data.urls[ 0 ];
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }).inject( UrlInput, 'after' );
+            }
+
+
+            return ev;
         }
     });
 });
