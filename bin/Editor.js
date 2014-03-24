@@ -114,19 +114,59 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 ev = self.$linkDialog( ev );
             });
 
+            Editor.getManager().getToolbar(function(buttons)
+            {
+                // parse the buttons for the ckeditor
+                var b, g, i, len, blen, glen, group, items,
+                    buttonEntry, lineEntry, groupEntry;
 
-            window.CKEDITOR.replace(instance, {
-                language     : Locale.getCurrent(),
-                baseHref     : URL_DIR,
-                basePath     : URL_DIR,
-                height       : Instance.getSize().y - 140,
-                width        : Instance.getSize().x + 20,
-                // toolbar      : CKEDITOR_NEXGAM_TOOLBAR,
-                // contentsCss  : CKEDITOR_NEXGAM_CSS,
-                // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
-                // plugins      : CKEDITOR_NEXGAM_PLUGINS,
-                // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                baseFloatZIndex : 100
+                var lines   = buttons.lines,
+                    toolbar = [];
+
+                for ( i = 0, len = lines.length; i < len; i++ )
+                {
+                    items     = [];
+                    lineEntry = lines[ i ];
+
+                    // groups
+                    for ( g = 0, glen = lineEntry.length; g < glen; g++ )
+                    {
+                        group      = [];
+                        groupEntry = lineEntry[ g ];
+
+                        // buttons
+                        for ( b = 0, blen = groupEntry.length; b < blen; b++ )
+                        {
+                            buttonEntry = groupEntry[ b ];
+
+                            if ( buttonEntry.type == 'seperator' )
+                            {
+                                group.push( '-' );
+                                continue;
+                            }
+
+                            group.push( buttonEntry.button );
+                        }
+
+                        toolbar.push( group );
+                    }
+
+                    toolbar.push( '/' );
+                }
+
+                window.CKEDITOR.replace(instance, {
+                    language     : Locale.getCurrent(),
+                    baseHref     : URL_DIR,
+                    basePath     : URL_DIR,
+                    height       : Instance.getSize().y - 140,
+                    width        : Instance.getSize().x + 20,
+                    toolbar      : toolbar,
+                    // contentsCss  : CKEDITOR_NEXGAM_CSS,
+                    // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
+                    // plugins      : CKEDITOR_NEXGAM_PLUGINS,
+                    // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
+                    baseFloatZIndex : 100
+                });
             });
         },
 
