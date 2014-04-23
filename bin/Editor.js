@@ -85,28 +85,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
             Editor.setAttribute( 'instancename', instance );
 
-            /*
-            CKEDITOR.plugins.addExternal(
-                'pcsg_image',
-                URL_OPT_DIR +'base/bin/pcsgEditorPlugins/image/'
-            );
-
-            CKEDITOR.plugins.addExternal(
-                'pcsg_link',
-                URL_OPT_DIR +'base/bin/pcsgEditorPlugins/link/'
-            );
-
-            CKEDITOR.plugins.addExternal(
-                'pcsg_short',
-                URL_OPT_DIR +'base/bin/pcsgEditorPlugins/short/'
-            );
-
-            CKEDITOR.plugins.addExternal(
-                'pcsg_youtube',
-                URL_OPT_DIR +'base/bin/pcsgEditorPlugins/youtube/'
-            );
-            */
-
             // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
             window.CKEDITOR.on( 'dialogDefinition', function( ev )
             {
@@ -120,7 +98,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 var b, g, i, len, blen, glen, group, items,
                     buttonEntry, lineEntry, groupEntry;
 
-                var lines   = buttons.lines,
+                var lines   = buttons.lines || [],
                     toolbar = [];
 
                 for ( i = 0, len = lines.length; i < len; i++ )
