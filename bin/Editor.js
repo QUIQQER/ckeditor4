@@ -25,11 +25,11 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         Type    : 'package/quiqqer/ckeditor4/bin/Editor',
 
         Binds : [
-            '$onDestroy',
-            '$onDraw',
-            '$onSetContent',
-            '$onGetContent',
-            '$onDrop'
+             '$onDestroy',
+             '$onDraw',
+             '$onSetContent',
+             '$onGetContent',
+             '$onDrop'
         ],
 
         initialize : function(Manager, options)
@@ -41,8 +41,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 onDraw       : this.$onDraw,
                 onSetContent : this.$onSetContent,
                 onGetContent : this.$onGetContent,
-                onDrop       : this.$onDrop,
-                onAddCSS     : this.$onAddCSS
+                onDrop       : this.$onDrop
             });
         },
 
@@ -134,16 +133,14 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 }
 
                 window.CKEDITOR.replace(instance, {
-                    language : Locale.getCurrent(),
-                    baseHref : URL_DIR,
-                    basePath : URL_DIR,
-                    height   : Instance.getSize().y - 140,
-                    width    : Instance.getSize().x + 20,
-                    toolbar  : toolbar,
-                    allowedContent: true,
-                    //contentsCss  : Editor.getAttribute( 'bodyClass' ),
-                    bodyClass    : Editor.getAttribute( 'bodyClass' ),
-                    bodyId       : Editor.getAttribute( 'bodyId' ),
+                    language     : Locale.getCurrent(),
+                    baseHref     : URL_DIR,
+                    basePath     : URL_DIR,
+                    height       : Instance.getSize().y - 140,
+                    width        : Instance.getSize().x + 20,
+                    toolbar      : toolbar,
+                    // contentsCss  : CKEDITOR_NEXGAM_CSS,
+                    // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
                     // plugins      : CKEDITOR_NEXGAM_PLUGINS,
                     // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
                     baseFloatZIndex : 100
@@ -179,6 +176,42 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             // load CKEDITOR
             require([URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js'], function()
             {
+                /*
+                CKEDITOR.editorConfig = function( config ) {
+                    config.language = 'fr';
+                    config.uiColor = '#AADC6E';
+                };
+                */
+
+
+                // CKEditor aufbauen
+                // CKEDITOR_BASEPATH = URL_DIR;
+                /*
+                CKEDITOR_NEXGAM_TOOLBAR = [
+                    { name: 'clipboard', items : [ 'Source', ,'Maximize', '-','pcsg_short', 'Templates','-', 'Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                    { name: 'basicstyles', items : [ 'Bold','Italic', 'Underline', 'Strike','-','Subscript','Superscript','-','RemoveFormat' ] },
+                    { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','NumberedList','BulletedList' ] },
+                    { name: 'pcsg', items : [ 'pcsg_image','-', 'pcsg_link', 'pcsg_unlink' ] },
+                    { name: 'blocks', items : [ 'Format', 'pcsg_youtube' ] }
+                ];
+
+                CKEDITOR_NEXGAM_PLUGINS = '' +
+                    'basicstyles,blockquote,button,clipboard,contextmenu,div,elementspath,enterkey,entities,find,' +
+                    'font,format,indent,justify,keystrokes,list,liststyle,maximize,pastefromword,' +
+                    'pastetext,removeformat,showblocks,showborders,sourcearea,stylescombo,' +
+                    'table,tabletools,specialchar,tab,templates,toolbar,undo,wysiwygarea,wsc,pcsg_image,pcsg_link,pcsg_short,pcsg_youtube';
+
+                CKEDITOR_NEXGAM_CSS = [
+                    URL_USR_DIR +"bin/nexgam3/css/reset.css",
+                    URL_USR_DIR +"bin/nexgam3/css/style.css",
+                    URL_USR_DIR +"bin/nexgam3/css/wysiwyg.css",
+                    URL_USR_DIR +"bin/nexgam3/css/images.css",
+                    URL_USR_DIR +"bin/nexgam3/css/review.css"
+                ];
+
+                CKEDITOR_NEXGAM_BODY_CLASS = 'content left content-inner-container wysiwyg';
+                */
+
                 window.CKEDITOR.on('instanceReady', function(instance)
                 {
                     if ( typeof instance.editor === 'undefined' ||
@@ -236,14 +269,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             for ( var i = 0, len = params.length; i < len; i++ ) {
                 Instance.insertHtml( "<img src="+ params[ i ].url +" />" );
             }
-        },
-
-        /**
-         * event : add a css file to the editor
-         */
-        $onAddCSS : function(file)
-        {
-
         },
 
         /**
@@ -371,9 +396,11 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             // remove protokoll dropdown
-            dialogDefinition.getContents( 'info' ).remove( 'protocol');
+            //dialogDefinition.getContents( 'info' ).remove( 'protocol');
 
             // remove protokoll at insertion
+            var Protokoll;
+
             var Url       = dialogDefinition.getContents( 'info' ).get( 'url' ),
                 orgCommit = Url.commit;
 
@@ -382,8 +409,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 orgCommit.call( this, data );
 
                 data.url = {
-                    protocol: '',
-                    url: this.getValue()
+                    protocol : Protokoll.value,
+                    url      : this.getValue()
                 };
             };
 
@@ -403,8 +430,12 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     return;
                 }
 
-                var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
+                var UrlInput  = UrlGroup.getElement( 'input[type="text"]' );
 
+                Protokoll = this.getContentElement('info', 'protocol' )
+                                .getElement()
+                                .$
+                                .getElement('select')
 
                 UrlInput.setStyles({
                     'float' : 'left',
@@ -413,16 +444,18 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 var Button = new Element('button', {
                     'class' : 'qui-button',
-                    html : '<span class="icon-home"></span>',
-                    events :
+                    html    : '<span class="icon-home"></span>',
+                    events  :
                     {
                         click : function()
                         {
                             self.openProject({
                                 events :
                                 {
-                                    onSubmit : function(Win, data) {
-                                        UrlInput.value = data.urls[ 0 ];
+                                    onSubmit : function(Win, data)
+                                    {
+                                        UrlInput.value  = data.urls[ 0 ];
+                                        Protokoll.value = '';
                                     }
                                 }
                             });
