@@ -139,6 +139,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     height       : Instance.getSize().y - 140,
                     width        : Instance.getSize().x + 20,
                     toolbar      : toolbar,
+                    extraAllowedContent : 'div(*), iframe[*]',
                     // contentsCss  : CKEDITOR_NEXGAM_CSS,
                     // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
                     // plugins      : CKEDITOR_NEXGAM_PLUGINS,
