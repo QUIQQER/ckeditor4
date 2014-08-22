@@ -133,13 +133,16 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 }
 
                 window.CKEDITOR.replace(instance, {
-                    language     : Locale.getCurrent(),
-                    baseHref     : URL_DIR,
-                    basePath     : URL_DIR,
-                    height       : Instance.getSize().y - 140,
-                    width        : Instance.getSize().x + 20,
-                    toolbar      : toolbar,
-                    extraAllowedContent : 'div(*), iframe[*]',
+                    language : Locale.getCurrent(),
+                    baseHref : URL_DIR,
+                    basePath : URL_DIR,
+                    height   : Instance.getSize().y - 140,
+                    width    : Instance.getSize().x + 20,
+                    toolbar  : toolbar,
+
+                    allowedContent      : true,
+                    extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
+
                     // contentsCss  : CKEDITOR_NEXGAM_CSS,
                     // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
                     // plugins      : CKEDITOR_NEXGAM_PLUGINS,
