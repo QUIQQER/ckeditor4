@@ -92,7 +92,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 ev = self.$linkDialog( ev );
             });
 
-            Editor.getManager().getToolbar(function(buttons)
+            this.getButtons(function(buttons)
             {
                 // parse the buttons for the ckeditor
                 var b, g, i, len, blen, glen, group, items,
@@ -259,6 +259,72 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         {
             if ( Editor.getInstance() ) {
                 Editor.setAttribute( 'content', Editor.getInstance().getData() );
+            }
+        },
+
+        /**
+         * Set the focus to the editor
+         */
+        focus : function()
+        {
+            if ( this.getInstance() ) {
+                this.getInstance().focus();
+            }
+        },
+
+        /**
+         * Switch to source mode
+         */
+        switchToSource : function()
+        {
+            if ( this.getInstance() ) {
+                this.getInstance().setMode( 'source' );
+            }
+        },
+
+        /**
+         * Switch to wysiwyg editor
+         */
+        switchToWYSIWYG : function()
+        {
+            if ( this.getInstance() ) {
+                this.getInstance().setMode( 'wysiwyg' );
+            }
+        },
+
+        /**
+         * Hide the toolbar
+         */
+        hideToolbar : function()
+        {
+            var Toolbar = this.getElm().getElement( '.cke_top' );
+
+            if ( Toolbar ) {
+                Toolbar.setStyle( 'display', 'none' );
+            }
+        },
+
+        /**
+         * show the toolbar
+         */
+        showToolbar : function()
+        {
+            var Toolbar = this.getElm().getElement( '.cke_top' );
+
+            if ( Toolbar ) {
+                Toolbar.setStyle( 'display', null );
+            }
+        },
+
+        /**
+         * Set the height of the instance
+         *
+         * @param {Integer} height
+         */
+        setHeight : function(height)
+        {
+            if ( this.getInstance() ) {
+                this.getInstance().resize( false, height );
             }
         },
 
