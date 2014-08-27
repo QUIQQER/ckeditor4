@@ -478,6 +478,15 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             {
                 orgCommit.call( this, data );
 
+                console.log(
+
+                        this.getContentElement('info', 'protocol' )
+                        .getElement()
+                        .$
+                        .getElement('select')
+
+                );
+
                 data.url = {
                     protocol : Protokoll.value,
                     url      : this.getValue()
