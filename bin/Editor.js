@@ -1,19 +1,19 @@
 /**
  * ckeditor4 for QUIQQER
  *
+ * @module URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module package/ckeditor4/bin/Editor
- * @package package/ckeditor4/bin/Editor
+ *
  */
 
-define('package/quiqqer/ckeditor4/bin/Editor', [
+define([
 
     'require',
     'controls/editors/Editor',
     'Locale',
 
-    'css!package/quiqqer/ckeditor4/bin/Editor.css'
+    'css!URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor.css'
 
 ], function(require, Editor, Locale)
 {
@@ -22,7 +22,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
     return new Class({
 
         Extends : Editor,
-        Type    : 'package/quiqqer/ckeditor4/bin/Editor',
+        Type    : 'URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor',
 
         Binds : [
              '$onDestroy',

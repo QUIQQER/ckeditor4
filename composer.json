@@ -19,12 +19,5 @@
     "require": {
         "quiqqer/quiqqer" : "*",
         "quiqqer/package-ckeditor4" : "4.*"
-    },
-
-    "extra": {
-        "component": {
-            "files": ["**"],
-            "name": "quiqqer/ckeditor4"
-        }
     }
 }
