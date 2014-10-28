@@ -13,7 +13,7 @@ define([
     'controls/editors/Editor',
     'Locale',
 
-    'css!URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor.css'
+    'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
 ], function(require, Editor, Locale)
 {
@@ -22,14 +22,15 @@ define([
     return new Class({
 
         Extends : Editor,
-        Type    : 'URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor',
+        Type    : 'package/quiqqer/ckeditor4/bin/Editor',
 
         Binds : [
              '$onDestroy',
              '$onDraw',
              '$onSetContent',
              '$onGetContent',
-             '$onDrop'
+             '$onDrop',
+             '$onInstanceReadyListener'
         ],
 
         initialize : function(Manager, options)
@@ -161,8 +162,21 @@ define([
         {
             var Instance = Editor.getInstance();
 
-            if ( window.CKEDITOR.instances[ Instance.name ] ) {
-                window.CKEDITOR.instances[ Instance.name ].destroy( true );
+            if ( window.CKEDITOR.instances[ Instance.name ] )
+            {
+                try
+                {
+                    window.CKEDITOR.instances[ Instance.name ].destroy( true );
+
+                } catch ( e ) {
+
+                }
+
+                window.CKEDITOR.instances[ Instance.name ] = null;
+                delete window.CKEDITOR.instances[ Instance.name ];
+
+
+                window.CKEDITOR.removeListener( 'instanceReady', this.$onInstanceReadyListener );
             }
         },
 
@@ -216,25 +230,29 @@ define([
                 CKEDITOR_NEXGAM_BODY_CLASS = 'content left content-inner-container wysiwyg';
                 */
 
-                window.CKEDITOR.on('instanceReady', function(instance)
-                {
-                    if ( typeof instance.editor === 'undefined' ||
-                         typeof instance.editor.name  === 'undefined' ||
-                         instance.editor.name !== Editor.getAttribute( 'instancename' ) )
-                    {
-                        return;
-                    }
-
-                    Editor.setInstance( instance.editor );
-                    Editor.fireEvent( 'loaded', [ Editor, instance.editor ] );
-
-                    instance.editor.focus();
-
-                });
+                window.CKEDITOR.on('instanceReady', self.$onInstanceReadyListener );
 
                 Editor.loadInstance( Container, Editor );
             });
         },
+
+
+        $onInstanceReadyListener : function(instance)
+        {
+            if ( typeof instance.editor === 'undefined' ||
+                 typeof instance.editor.name  === 'undefined' ||
+                 instance.editor.name !== this.getAttribute( 'instancename' ) )
+            {
+                console.error( '#' );
+                return;
+            }
+
+            this.setInstance( instance.editor );
+            this.fireEvent( 'loaded', [ this, instance.editor ] );
+
+            instance.editor.focus();
+        },
+
 
         /**
          * Editor onSetContent Event
