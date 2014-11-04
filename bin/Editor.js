@@ -243,7 +243,6 @@ define([
                  typeof instance.editor.name  === 'undefined' ||
                  instance.editor.name !== this.getAttribute( 'instancename' ) )
             {
-                console.error( '#' );
                 return;
             }
 
