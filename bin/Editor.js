@@ -421,14 +421,23 @@ define([
 
                                             Ajax.get('ajax_media_details', function(fileData)
                                             {
-                                                var result = QUIMath.resizeVar(
-                                                    fileData.image_height,
-                                                    fileData.image_width,
-                                                    500
-                                                );
+                                                if ( fileData.image_height > 500 ||
+                                                     fileData.image_width > 500 )
+                                                {
+                                                    var result = QUIMath.resizeVar(
+                                                        fileData.image_height,
+                                                        fileData.image_width,
+                                                        500
+                                                    );
 
-                                                HeightInput.value = result.var1;
-                                                WidthInput.value  = result.var2;
+                                                    HeightInput.value = result.var1;
+                                                    WidthInput.value  = result.var2;
+
+                                                } else
+                                                {
+                                                    HeightInput.value = fileData.image_height;
+                                                    WidthInput.value  = fileData.image_width;
+                                                }
 
                                             }, {
                                                 project : data.project,
