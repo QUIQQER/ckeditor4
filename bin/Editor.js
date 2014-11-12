@@ -12,10 +12,12 @@ define([
     'require',
     'controls/editors/Editor',
     'Locale',
+    'Ajax',
+    'qui/utils/Math',
 
     'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
-], function(require, Editor, Locale)
+], function(require, Editor, Locale, Ajax, QUIMath)
 {
     "use strict";
 
@@ -392,6 +394,15 @@ define([
 
                 var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
 
+                var HeightInput = this.getContentElement('info', 'txtHeight' )
+                                      .getElement().$
+                                      .getElement( 'input[type="text"]' );
+
+                var WidthInput = this.getContentElement('info', 'txtWidth' )
+                                     .getElement().$
+                                     .getElement( 'input[type="text"]' );
+
+
                 if ( !UrlGroup.getElement( '.qui-button' ) )
                 {
                     var Button = new Element('button', {
@@ -407,6 +418,22 @@ define([
                                         onSubmit : function(Win, data)
                                         {
                                             UrlInput.value = data.url;
+
+                                            Ajax.get('ajax_media_details', function(fileData)
+                                            {
+                                                var result = QUIMath.resizeVar(
+                                                    fileData.image_height,
+                                                    fileData.image_width,
+                                                    500
+                                                );
+
+                                                HeightInput.value = result.var1;
+                                                WidthInput.value  = result.var2;
+
+                                            }, {
+                                                project : data.project,
+                                                fileid  : data.id
+                                            });
                                         }
                                     }
                                 });
@@ -556,7 +583,6 @@ define([
                     }
                 }).inject( UrlInput, 'after' );
             }
-
 
             return ev;
         }
