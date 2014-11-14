@@ -1,7 +1,7 @@
 /**
  * ckeditor4 for QUIQQER
  *
- * @module URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor
+ * @module package/quiqqer/ckeditor4/bin/Editor
  * @author www.pcsg.de (Henning Leutz)
  *
  *
@@ -32,6 +32,7 @@ define([
              '$onSetContent',
              '$onGetContent',
              '$onDrop',
+             '$onAddCSS',
              '$onInstanceReadyListener'
         ],
 
@@ -39,12 +40,15 @@ define([
         {
             this.parent( Manager, options );
 
+            this.$cssFiles = {};
+
             this.addEvents({
                 onDestroy    : this.$onDestroy,
                 onDraw       : this.$onDraw,
                 onSetContent : this.$onSetContent,
                 onGetContent : this.$onGetContent,
-                onDrop       : this.$onDrop
+                onDrop       : this.$onDrop,
+                onAddCSS     : this.$onAddCSS
             });
         },
 
@@ -146,8 +150,8 @@ define([
                     allowedContent      : true,
                     extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
 
-                    // contentsCss  : CKEDITOR_NEXGAM_CSS,
-                    // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
+                    contentsCss  : Object.keys( self.$cssFiles ),
+                    bodyClass    : self.getAttribute( 'bodyClass' ),
                     // plugins      : CKEDITOR_NEXGAM_PLUGINS,
                     // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
                     baseFloatZIndex : 100
@@ -344,6 +348,30 @@ define([
         {
             if ( this.getInstance() ) {
                 this.getInstance().resize( false, height );
+            }
+        },
+
+        /**
+         * event : on add css
+         *
+         * @param {String} file - path to the css file
+         */
+        $onAddCSS : function(file, Editor)
+        {
+            var Instance = Editor.getInstance();
+
+            this.$cssFiles[ file ] = true;
+
+            if ( Instance )
+            {
+                var Doc  = Editor.getDocument(),
+                    Link = Doc.createElement('link');
+
+                Link.href = file;
+                Link.rel  = "stylesheet";
+                Link.type = "text/css";
+
+                Doc.head.appendChild( Link );
             }
         },
 
