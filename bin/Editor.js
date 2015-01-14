@@ -144,12 +144,23 @@ define([
                     toolbar.push( '/' );
                 }
 
+                var height = Instance.getSize().y - 140,
+                    width  = Instance.getSize().x + 20;
+
+                if ( self.getAttribute( 'width' ) ) {
+                    width = self.getAttribute( 'width' );
+                }
+
+                if ( self.getAttribute( 'height' ) ) {
+                    height = self.getAttribute( 'height' ) - 140;
+                }
+
                 window.CKEDITOR.replace(instance, {
                     language : Locale.getCurrent(),
                     baseHref : URL_DIR,
                     basePath : URL_DIR,
-                    height   : Instance.getSize().y - 140,
-                    width    : Instance.getSize().x + 20,
+                    height   : height,
+                    width    : width,
                     toolbar  : toolbar,
 
                     allowedContent      : true,
@@ -247,7 +258,10 @@ define([
             });
         },
 
-
+        /**
+         * event : instance ready
+         * @param instance
+         */
         $onInstanceReadyListener : function(instance)
         {
             if ( typeof instance.editor === 'undefined' ||
@@ -262,7 +276,6 @@ define([
 
             instance.editor.focus();
         },
-
 
         /**
          * Editor onSetContent Event
@@ -353,6 +366,22 @@ define([
             if ( this.getInstance() ) {
                 this.getInstance().resize( false, height );
             }
+
+            this.setAttribute( 'height', height );
+        },
+
+        /**
+         * Set the height of the instance
+         *
+         * @param {Number} width
+         */
+        setWidth : function(width)
+        {
+            if ( this.getInstance() ) {
+                this.getInstance().resize( width, false );
+            }
+
+            this.setAttribute( 'width', width );
         },
 
         /**
