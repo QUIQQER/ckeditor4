@@ -19,10 +19,11 @@ define([
     'Locale',
     'Ajax',
     'qui/utils/Math',
+    'qui/utils/Elements',
 
     'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
-], function(require, Editor, Locale, Ajax, QUIMath)
+], function(require, Editor, Locale, Ajax, QUIMath, QUIElements)
 {
     "use strict";
 
@@ -155,6 +156,8 @@ define([
                     height = self.getAttribute( 'height' ) - 140;
                 }
 
+                var zIndex = QUIElements.getComputedZIndex( Container );
+
                 window.CKEDITOR.replace(instance, {
                     language : Locale.getCurrent(),
                     baseHref : URL_DIR,
@@ -170,7 +173,7 @@ define([
                     bodyClass    : self.getAttribute( 'bodyClass' ),
                     // plugins      : CKEDITOR_NEXGAM_PLUGINS,
                     // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                    baseFloatZIndex : 100
+                    baseFloatZIndex : zIndex
                 });
             });
         },
