@@ -1,10 +1,15 @@
 /**
  * ckeditor4 for QUIQQER
  *
- * @module URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor
+ * @module package/quiqqer/ckeditor4/bin/Editor
  * @author www.pcsg.de (Henning Leutz)
  *
- *
+ * @require require
+ * @require controls/editors/Editor
+ * @require Locale
+ * @require Ajax
+ * @require qui/utils/Math
+ * @require css!package/quiqqer/ckeditor4/bin/Editor.css
  */
 
 define([
@@ -12,44 +17,52 @@ define([
     'require',
     'controls/editors/Editor',
     'Locale',
+    'Ajax',
+    'qui/utils/Math',
+    'qui/utils/Elements',
 
-    'css!URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor.css'
+    'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
-], function(require, Editor, Locale)
+], function(require, Editor, Locale, Ajax, QUIMath, QUIElements)
 {
     "use strict";
 
     return new Class({
 
         Extends : Editor,
-        Type    : 'URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor',
+        Type    : 'package/quiqqer/ckeditor4/bin/Editor',
 
         Binds : [
              '$onDestroy',
              '$onDraw',
              '$onSetContent',
              '$onGetContent',
-             '$onDrop'
+             '$onDrop',
+             '$onAddCSS',
+             '$onInstanceReadyListener'
         ],
 
         initialize : function(Manager, options)
         {
             this.parent( Manager, options );
 
+            this.$cssFiles = {};
+
             this.addEvents({
                 onDestroy    : this.$onDestroy,
                 onDraw       : this.$onDraw,
                 onSetContent : this.$onSetContent,
                 onGetContent : this.$onGetContent,
-                onDrop       : this.$onDrop
+                onDrop       : this.$onDrop,
+                onAddCSS     : this.$onAddCSS
             });
         },
 
         /**
          * Load the CKEditor Instance into an Textarea or DOMNode Element
          *
-         * @param {DOMNode} Container
-         * @param {controls/editor/Editor} Editor
+         * @param {HTMLElement} Container
+         * @param {Object} Editor - controls/editors/Editor
          */
         loadInstance : function(Container, Editor)
         {
@@ -62,15 +75,15 @@ define([
 
             if ( !Container.getElement( 'textarea' ) )
             {
-                var size = Container.getSize(),
+                var size = Container.getSize();
 
-                    Instance = new Element('textarea', {
-                        id : this.getId(),
-                        styles : {
-                            height : size.y,
-                            width : size.x - 20
-                        }
-                    }).inject( Container );
+                Instance = new Element('textarea', {
+                    id : this.getId(),
+                    styles : {
+                        height : size.y,
+                        width : size.x - 20
+                    }
+                }).inject( Container );
             }
 
             if ( Instance.nodeName != 'TEXTAREA' ) {
@@ -88,8 +101,8 @@ define([
             // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
             window.CKEDITOR.on( 'dialogDefinition', function( ev )
             {
-                ev = self.$imageDialog( ev );
-                ev = self.$linkDialog( ev );
+                self.$imageDialog( ev );
+                self.$linkDialog( ev );
             });
 
             this.getButtons(function(buttons)
@@ -132,22 +145,35 @@ define([
                     toolbar.push( '/' );
                 }
 
+                var height = Instance.getSize().y - 140,
+                    width  = Instance.getSize().x + 20;
+
+                if ( self.getAttribute( 'width' ) ) {
+                    width = self.getAttribute( 'width' );
+                }
+
+                if ( self.getAttribute( 'height' ) ) {
+                    height = self.getAttribute( 'height' ) - 140;
+                }
+
+                var zIndex = QUIElements.getComputedZIndex( Container );
+
                 window.CKEDITOR.replace(instance, {
                     language : Locale.getCurrent(),
                     baseHref : URL_DIR,
                     basePath : URL_DIR,
-                    height   : Instance.getSize().y - 140,
-                    width    : Instance.getSize().x + 20,
+                    height   : height,
+                    width    : width,
                     toolbar  : toolbar,
 
                     allowedContent      : true,
                     extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
 
-                    // contentsCss  : CKEDITOR_NEXGAM_CSS,
-                    // bodyClass    : CKEDITOR_NEXGAM_BODY_CLASS,
+                    contentsCss  : Object.keys( self.$cssFiles ),
+                    bodyClass    : self.getAttribute( 'bodyClass' ),
                     // plugins      : CKEDITOR_NEXGAM_PLUGINS,
                     // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                    baseFloatZIndex : 100
+                    baseFloatZIndex : zIndex
                 });
             });
         },
@@ -155,14 +181,27 @@ define([
         /**
          * Editor onDestroy Event
          *
-         * @param {QUI.classes.Editor} Editor
+         * @param {Object} Editor - controls/editors/Editor
          */
         $onDestroy : function(Editor)
         {
             var Instance = Editor.getInstance();
 
-            if ( window.CKEDITOR.instances[ Instance.name ] ) {
-                window.CKEDITOR.instances[ Instance.name ].destroy( true );
+            if ( window.CKEDITOR.instances[ Instance.name ] )
+            {
+                try
+                {
+                    window.CKEDITOR.instances[ Instance.name ].destroy( true );
+
+                } catch ( e ) {
+
+                }
+
+                window.CKEDITOR.instances[ Instance.name ] = null;
+                delete window.CKEDITOR.instances[ Instance.name ];
+
+
+                window.CKEDITOR.removeListener( 'instanceReady', this.$onInstanceReadyListener );
             }
         },
 
@@ -170,15 +209,15 @@ define([
          * Editor onDraw Event
          * if the editor is to be drawn
          *
-         * @param {DOMNode} Container
-         * @param {controls/editors/Editor} Editor
+         * @param {HTMLElement} Container
+         * @param {Object} Editor - controls/editors/Editor
          */
         $onDraw : function(Container, Editor)
         {
             var self = this;
 
             // load CKEDITOR
-            require([URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js'], function()
+            require([ URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js' ], function()
             {
                 /*
                 CKEDITOR.editorConfig = function( config ) {
@@ -216,31 +255,36 @@ define([
                 CKEDITOR_NEXGAM_BODY_CLASS = 'content left content-inner-container wysiwyg';
                 */
 
-                window.CKEDITOR.on('instanceReady', function(instance)
-                {
-                    if ( typeof instance.editor === 'undefined' ||
-                         typeof instance.editor.name  === 'undefined' ||
-                         instance.editor.name !== Editor.getAttribute( 'instancename' ) )
-                    {
-                        return;
-                    }
-
-                    Editor.setInstance( instance.editor );
-                    Editor.fireEvent( 'loaded', [ Editor, instance.editor ] );
-
-                    instance.editor.focus();
-
-                });
+                window.CKEDITOR.on('instanceReady', self.$onInstanceReadyListener );
 
                 Editor.loadInstance( Container, Editor );
             });
         },
 
         /**
+         * event : instance ready
+         * @param instance
+         */
+        $onInstanceReadyListener : function(instance)
+        {
+            if ( typeof instance.editor === 'undefined' ||
+                 typeof instance.editor.name  === 'undefined' ||
+                 instance.editor.name !== this.getAttribute( 'instancename' ) )
+            {
+                return;
+            }
+
+            this.setInstance( instance.editor );
+            this.fireEvent( 'loaded', [ this, instance.editor ] );
+
+            instance.editor.focus();
+        },
+
+        /**
          * Editor onSetContent Event
          *
          * @param {String} content
-         * @param {controls/editors/Editor} Editor
+         * @param {Object} Editor - controls/editors/Editor
          */
         $onSetContent : function(content, Editor)
         {
@@ -252,8 +296,7 @@ define([
         /**
          * Editor onGetContent Event
          *
-         * @param {String} content
-         * @param {controls/editors/Editor} Editor
+         * @param {Object} Editor - controls/editors/Editor
          */
         $onGetContent : function(Editor)
         {
@@ -319,17 +362,58 @@ define([
         /**
          * Set the height of the instance
          *
-         * @param {Integer} height
+         * @param {Number} height
          */
         setHeight : function(height)
         {
             if ( this.getInstance() ) {
                 this.getInstance().resize( false, height );
             }
+
+            this.setAttribute( 'height', height );
         },
 
         /**
+         * Set the height of the instance
          *
+         * @param {Number} width
+         */
+        setWidth : function(width)
+        {
+            if ( this.getInstance() ) {
+                this.getInstance().resize( width, false );
+            }
+
+            this.setAttribute( 'width', width );
+        },
+
+        /**
+         * event : on add css
+         *
+         * @param {String} file - path to the css file
+         * @param {Object} Editor - controls/editor/Editor
+         */
+        $onAddCSS : function(file, Editor)
+        {
+            var Instance = Editor.getInstance();
+
+            this.$cssFiles[ file ] = true;
+
+            if ( Instance )
+            {
+                var Doc  = Editor.getDocument(),
+                    Link = Doc.createElement('link');
+
+                Link.href = file;
+                Link.rel  = "stylesheet";
+                Link.type = "text/css";
+
+                Doc.head.appendChild( Link );
+            }
+        },
+
+        /**
+         * event : on Drop
          * @param {Object} params
          */
         $onDrop : function(params)
@@ -344,8 +428,8 @@ define([
         /**
          * edit the image dialog
          *
-         * @param {CKEvent} ev
-         * @return {CKEvent} ev
+         * @param {DOMEvent} ev - CKEvent
+         * @return {DOMEvent} ev (CKEvent)
          */
         $imageDialog : function(ev)
         {
@@ -366,6 +450,8 @@ define([
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function()
             {
+                var Button;
+
                 oldOnShow.bind( this )();
 
                 // image button
@@ -375,9 +461,18 @@ define([
 
                 var UrlInput = UrlGroup.getElement( 'input[type="text"]' );
 
+                var HeightInput = this.getContentElement('info', 'txtHeight' )
+                                      .getElement().$
+                                      .getElement( 'input[type="text"]' );
+
+                var WidthInput = this.getContentElement('info', 'txtWidth' )
+                                     .getElement().$
+                                     .getElement( 'input[type="text"]' );
+
+
                 if ( !UrlGroup.getElement( '.qui-button' ) )
                 {
-                    var Button = new Element('button', {
+                    Button = new Element('button', {
                         'class' : 'qui-button',
                         html : '<span class="icon-picture"></span>',
                         events :
@@ -390,6 +485,31 @@ define([
                                         onSubmit : function(Win, data)
                                         {
                                             UrlInput.value = data.url;
+
+                                            Ajax.get('ajax_media_details', function(fileData)
+                                            {
+                                                if ( fileData.image_height > 500 ||
+                                                     fileData.image_width > 500 )
+                                                {
+                                                    var result = QUIMath.resizeVar(
+                                                        fileData.image_height,
+                                                        fileData.image_width,
+                                                        500
+                                                    );
+
+                                                    HeightInput.value = result.var1;
+                                                    WidthInput.value  = result.var2;
+
+                                                } else
+                                                {
+                                                    HeightInput.value = fileData.image_height;
+                                                    WidthInput.value  = fileData.image_width;
+                                                }
+
+                                            }, {
+                                                project : data.project,
+                                                fileid  : data.id
+                                            });
                                         }
                                     }
                                 });
@@ -415,7 +535,7 @@ define([
 
                 var LinkInput = LinkGroup.getElement( 'input[type="text"]' );
 
-                var Button = new Element('button', {
+                Button = new Element('button', {
                     'class' : 'qui-button',
                     html : '<span class="icon-home"></span>',
                     events :
@@ -440,7 +560,7 @@ define([
                     'float' : 'left',
                     width : Prev.getSize().x - 100
                 });
-            }
+            };
 
             return ev;
         },
@@ -448,15 +568,13 @@ define([
         /**
          * edit the link dialog
          *
-         * @param {CKEvent} ev
-         * @return {CKEvent} ev
+         * @param {DOMEvent} ev - CKEvent
+         * @return {DOMEvent} ev - CKEvent
          */
         $linkDialog : function(ev)
         {
             // Take the dialog name and its definition from the event data.
-            var self             = this,
-                dialogName       = ev.data.name,
-                dialogDefinition = ev.data.definition;
+            var dialogName = ev.data.name;
 
             /**
              * Link dialog
@@ -471,7 +589,8 @@ define([
             // remove protokoll at insertion
             var Protokoll;
 
-            var Url       = dialogDefinition.getContents( 'info' ).get( 'url' ),
+            var dialogDefinition = ev.data.definition,
+                Url       = dialogDefinition.getContents( 'info' ).get( 'url' ),
                 orgCommit = Url.commit;
 
             Url.commit = function( data )
@@ -490,8 +609,8 @@ define([
                 };
             };
 
-
-            var oldOnShow = dialogDefinition.onShow;
+            var self      = this,
+                oldOnShow = dialogDefinition.onShow;
 
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function()
@@ -511,14 +630,14 @@ define([
                 Protokoll = this.getContentElement('info', 'protocol' )
                                 .getElement()
                                 .$
-                                .getElement('select')
+                                .getElement('select');
 
                 UrlInput.setStyles({
                     'float' : 'left',
-                    width   : UrlInput.getSize().x - 50
+                    width   : UrlInput.getSize().x - 100
                 });
 
-                var Button = new Element('button', {
+                var Links = new Element('button', {
                     'class' : 'qui-button',
                     html    : '<span class="icon-home"></span>',
                     events  :
@@ -538,8 +657,29 @@ define([
                         }
                     }
                 }).inject( UrlInput, 'after' );
-            }
 
+                // image button
+                new Element('button', {
+                    'class' : 'qui-button',
+                    html    : '<span class="icon-picture"></span>',
+                    events  :
+                    {
+                        click : function()
+                        {
+                            self.openMedia({
+                                events :
+                                {
+                                    onSubmit : function(Win, data)
+                                    {
+                                        UrlInput.value = data.url;
+                                        Protokoll.value = '';
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }).inject( Links, 'after' );
+            };
 
             return ev;
         }

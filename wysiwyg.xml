@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <editors>
-    <editor package="URL_OPT_DIR/quiqqer/ckeditor4/bin/Editor">
+    <editor package="package/quiqqer/ckeditor4/bin/Editor">
         ckeditor4
     </editor>
 </editors>
