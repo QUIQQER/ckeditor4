@@ -12,7 +12,7 @@
  * @require css!package/quiqqer/ckeditor4/bin/Editor.css
  */
 
-define([
+define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'require',
     'controls/editors/Editor',
