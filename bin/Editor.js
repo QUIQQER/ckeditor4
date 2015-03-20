@@ -395,7 +395,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          */
         $onAddCSS : function(file, Editor)
         {
-            var Instance = Editor.getInstance();
+            var Instance = this.getInstance();
 
             this.$cssFiles[ file ] = true;
 
