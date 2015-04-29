@@ -181,6 +181,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             // parse styles to fckedit styles
             var entry, styles = [];
 
+            if ( !("styles" in data) ) {
+                data.styles = [];
+            }
+
             for ( i = 0, len = data.styles.length; i < len; i++ )
             {
                 entry = data.styles[ i ];
@@ -204,7 +208,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
 
                 stylesSet    : styles,
-                contentsCss  : data.cssFiles,
+                contentsCss  : data.cssFiles || false,
                 bodyClass    : data.bodyClass,
                 // plugins      : CKEDITOR_NEXGAM_PLUGINS,
                 // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
