@@ -49,3 +49,9 @@
     font-weight: normal;
     text-decoration: inherit;
 }
+
+
+
+
+div.cke_panel.cke_combopanel.cke_ltr { width: 300px !important; }
+span.cke_rcombo span.cke_styles a span span.cke_text { width: 150px; }
