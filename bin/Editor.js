@@ -210,10 +210,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 stylesSet    : styles,
                 contentsCss  : data.cssFiles || false,
                 bodyClass    : data.bodyClass,
-                // plugins      : CKEDITOR_NEXGAM_PLUGINS,
                 // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                baseFloatZIndex : zIndex
-                //extraPlugins : 'panel,button,menu,floatpanel,menubutton,htmlbuttons'
+                baseFloatZIndex : zIndex,
+                extraPlugins : 'abbr'
             });
 
         },
