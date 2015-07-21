@@ -15,6 +15,7 @@
 define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'require',
+    'qui/QUI',
     'controls/editors/Editor',
     'Locale',
     'Ajax',
@@ -23,7 +24,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
-], function(require, Editor, Locale, Ajax, QUIMath, QUIElements)
+], function(require, QUI, Editor, Locale, Ajax, QUIMath, QUIElements)
 {
     "use strict";
 
@@ -70,12 +71,32 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         {
             var self = this;
 
-            // load CKEDITOR
-            require([ URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js' ], function()
-            {
-                window.CKEDITOR.on('instanceReady', self.$onInstanceReadyListener );
+            if ("CKEDITOR" in window) {
+                self.$loadInstance(data);
+                return;
+            }
 
-                self.$loadInstance( data );
+            // load CKEDITOR
+            require([URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js'], function()
+            {
+                // set global events
+                window.CKEDITOR.on('instanceReady', function(ev)
+                {
+                    var Editor = QUI.Controls.getById(ev.editor.name);
+
+                    Editor.$onInstanceReadyListener(ev);
+                });
+
+                // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
+                window.CKEDITOR.on('dialogDefinition', function(ev)
+                {
+                    var Editor = QUI.Controls.getById(ev.editor.name);
+
+                    Editor.$imageDialog(ev);
+                    Editor.$linkDialog(ev);
+                });
+
+                self.$loadInstance(data);
             });
         },
 
@@ -117,13 +138,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             self.setAttribute( 'instancename', instance );
-
-            // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
-            window.CKEDITOR.on( 'dialogDefinition', function( ev )
-            {
-                self.$imageDialog( ev );
-                self.$linkDialog( ev );
-            });
 
 
             // parse the buttons for the ckeditor
