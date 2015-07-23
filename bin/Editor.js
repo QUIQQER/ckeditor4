@@ -210,25 +210,27 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 });
             }
 
+            data.cssFiles.push(
+                URL_OPT_DIR +'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
+            );
+
             window.CKEDITOR.replace(instance, {
+                customConfig : '',
                 language : Locale.getCurrent(),
                 baseHref : URL_DIR,
                 basePath : URL_DIR,
                 height   : height,
                 width    : width,
                 toolbar  : toolbar,
-
                 allowedContent      : true,
                 extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
-
                 stylesSet    : styles,
-                contentsCss  : data.cssFiles || false,
+                contentsCss  : data.cssFiles || [],
                 bodyClass    : data.bodyClass,
                 // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
                 baseFloatZIndex : zIndex,
                 extraPlugins : 'abbr'
             });
-
         },
 
         /**
