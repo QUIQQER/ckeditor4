@@ -210,6 +210,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 });
             }
 
+            if (!("cssFiles" in data)) {
+                data.cssFiles = [];
+            }
+
             data.cssFiles.push(
                 URL_OPT_DIR +'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
             );
