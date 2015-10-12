@@ -12,9 +12,10 @@
  * @require css!package/quiqqer/ckeditor4/bin/Editor.css
  */
 
-define([
+define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'require',
+    'qui/QUI',
     'controls/editors/Editor',
     'Locale',
     'Ajax',
@@ -23,7 +24,7 @@ define([
 
     'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
-], function(require, Editor, Locale, Ajax, QUIMath, QUIElements)
+], function(require, QUI, Editor, Locale, Ajax, QUIMath, QUIElements)
 {
     "use strict";
 
@@ -33,13 +34,14 @@ define([
         Type    : 'package/quiqqer/ckeditor4/bin/Editor',
 
         Binds : [
-             '$onDestroy',
-             '$onDraw',
-             '$onSetContent',
-             '$onGetContent',
-             '$onDrop',
-             '$onAddCSS',
-             '$onInstanceReadyListener'
+            '$onLoad',
+            '$onDestroy',
+            '$onSetContent',
+            '$onGetContent',
+            '$onDrop',
+            '$onResize',
+            '$onAddCSS',
+            '$onInstanceReadyListener'
         ],
 
         initialize : function(Manager, options)
@@ -49,8 +51,9 @@ define([
             this.$cssFiles = {};
 
             this.addEvents({
+                onLoad       : this.$onLoad,
+                onResize     : this.$onResize,
                 onDestroy    : this.$onDestroy,
-                onDraw       : this.$onDraw,
                 onSetContent : this.$onSetContent,
                 onGetContent : this.$onGetContent,
                 onDrop       : this.$onDrop,
@@ -59,122 +62,178 @@ define([
         },
 
         /**
+         * Editor onLoad Event
+         * if the editor is to be drawn and inserted
+         *
+         * @param {Object} data - Editor data
+         */
+        $onLoad : function(data)
+        {
+            var self = this;
+
+            if ("CKEDITOR" in window) {
+                self.$loadInstance(data);
+                return;
+            }
+
+            // load CKEDITOR
+            require([URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js'], function()
+            {
+                // set global events
+                window.CKEDITOR.on('instanceReady', function(ev)
+                {
+                    var Editor = QUI.Controls.getById(ev.editor.name);
+
+                    Editor.$onInstanceReadyListener(ev);
+                });
+
+                // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
+                window.CKEDITOR.on('dialogDefinition', function(ev)
+                {
+                    var Editor = QUI.Controls.getById(ev.editor.name);
+
+                    Editor.$imageDialog(ev);
+                    Editor.$linkDialog(ev);
+                });
+
+                self.$loadInstance(data);
+            });
+        },
+
+        /**
          * Load the CKEditor Instance into an Textarea or DOMNode Element
          *
-         * @param {HTMLElement} Container
-         * @param {Object} Editor - controls/editors/Editor
+         * @param {Object} data - Editor settings data
          */
-        loadInstance : function(Container, Editor)
+        $loadInstance : function(data)
         {
             if ( typeof window.CKEDITOR === 'undefined' ) {
                 return;
             }
 
-            var self     = this,
-                Instance = Container;
+            var self      = this,
+                Container = this.getContainer(),
+                Textarea  = false,
+                size      = Container.getSize();
 
             if ( !Container.getElement( 'textarea' ) )
             {
-                var size = Container.getSize();
-
-                Instance = new Element('textarea', {
+                Textarea = new Element('textarea', {
                     id : this.getId(),
                     styles : {
                         height : size.y,
-                        width : size.x - 20
+                        width : size.x
                     }
                 }).inject( Container );
             }
 
-            if ( Instance.nodeName != 'TEXTAREA' ) {
-                Instance = Instance.getElement( 'textarea' );
+            if ( !Textarea ) {
+                Textarea = Container.getElement( 'textarea' );
             }
 
-            var instance = Instance.get( 'id' );
+            var instance = Textarea.get( 'id' );
 
             if ( window.CKEDITOR.instances[ instance ] ) {
                 window.CKEDITOR.instances[ instance ].destroy( true );
             }
 
-            Editor.setAttribute( 'instancename', instance );
+            self.setAttribute( 'instancename', instance );
 
-            // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
-            window.CKEDITOR.on( 'dialogDefinition', function( ev )
+
+            // parse the buttons for the ckeditor
+            var b, g, i, len, blen, glen, group, items,
+                buttonEntry, lineEntry, groupEntry;
+
+            var buttons = data.toolbar,
+                lines   = buttons.lines || [],
+                toolbar = [];
+
+            for ( i = 0, len = lines.length; i < len; i++ )
             {
-                self.$imageDialog( ev );
-                self.$linkDialog( ev );
-            });
+                items     = [];
+                lineEntry = lines[ i ];
 
-            this.getButtons(function(buttons)
-            {
-                // parse the buttons for the ckeditor
-                var b, g, i, len, blen, glen, group, items,
-                    buttonEntry, lineEntry, groupEntry;
-
-                var lines   = buttons.lines || [],
-                    toolbar = [];
-
-                for ( i = 0, len = lines.length; i < len; i++ )
+                // groups
+                for ( g = 0, glen = lineEntry.length; g < glen; g++ )
                 {
-                    items     = [];
-                    lineEntry = lines[ i ];
+                    group      = [];
+                    groupEntry = lineEntry[ g ];
 
-                    // groups
-                    for ( g = 0, glen = lineEntry.length; g < glen; g++ )
+                    // buttons
+                    for ( b = 0, blen = groupEntry.length; b < blen; b++ )
                     {
-                        group      = [];
-                        groupEntry = lineEntry[ g ];
+                        buttonEntry = groupEntry[ b ];
 
-                        // buttons
-                        for ( b = 0, blen = groupEntry.length; b < blen; b++ )
+                        if ( buttonEntry.type == 'seperator' )
                         {
-                            buttonEntry = groupEntry[ b ];
-
-                            if ( buttonEntry.type == 'seperator' )
-                            {
-                                group.push( '-' );
-                                continue;
-                            }
-
-                            group.push( buttonEntry.button );
+                            group.push( '-' );
+                            continue;
                         }
 
-                        toolbar.push( group );
+                        group.push( buttonEntry.button );
                     }
 
-                    toolbar.push( '/' );
+                    toolbar.push( group );
                 }
 
-                var height = Instance.getSize().y - 140,
-                    width  = Instance.getSize().x + 20;
+                toolbar.push( '/' );
+            }
 
-                if ( self.getAttribute( 'width' ) ) {
-                    width = self.getAttribute( 'width' );
-                }
+            var height = size.y,
+                width  = size.x;
 
-                if ( self.getAttribute( 'height' ) ) {
-                    height = self.getAttribute( 'height' ) - 140;
-                }
+            if ( self.getAttribute( 'width' ) ) {
+                width = self.getAttribute( 'width' );
+            }
 
-                var zIndex = QUIElements.getComputedZIndex( Container );
+            if ( self.getAttribute( 'height' ) ) {
+                height = self.getAttribute( 'height' );
+            }
 
-                window.CKEDITOR.replace(instance, {
-                    language : Locale.getCurrent(),
-                    baseHref : URL_DIR,
-                    basePath : URL_DIR,
-                    height   : height,
-                    width    : width,
-                    toolbar  : toolbar,
+            var zIndex = QUIElements.getComputedZIndex( Container );
 
-                    allowedContent      : true,
-                    extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
+            // parse styles to fckedit styles
+            var entry, styles = [];
 
-                    contentsCss  : Object.keys( self.$cssFiles ),
-                    bodyClass    : self.getAttribute( 'bodyClass' ),
-                    // plugins      : CKEDITOR_NEXGAM_PLUGINS,
-                    // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                    baseFloatZIndex : zIndex
+            if ( !("styles" in data) ) {
+                data.styles = [];
+            }
+
+            for ( i = 0, len = data.styles.length; i < len; i++ )
+            {
+                entry = data.styles[ i ];
+
+                styles.push({
+                    name : entry.text,
+                    element : entry.element,
+                    attributes : entry.attributes
                 });
+            }
+
+            if (!("cssFiles" in data)) {
+                data.cssFiles = [];
+            }
+
+            data.cssFiles.push(
+                URL_OPT_DIR +'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
+            );
+
+            window.CKEDITOR.replace(instance, {
+                customConfig : '',
+                language : Locale.getCurrent(),
+                baseHref : URL_DIR,
+                basePath : URL_DIR,
+                height   : height,
+                width    : width,
+                toolbar  : toolbar,
+                allowedContent      : true,
+                extraAllowedContent : 'div(*)[*]{*}, iframe(*)[*]{*}',
+                stylesSet    : styles,
+                contentsCss  : data.cssFiles || [],
+                bodyClass    : data.bodyClass,
+                // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
+                baseFloatZIndex : zIndex,
+                extraPlugins : 'abbr'
             });
         },
 
@@ -201,64 +260,11 @@ define([
                 delete window.CKEDITOR.instances[ Instance.name ];
 
 
-                window.CKEDITOR.removeListener( 'instanceReady', this.$onInstanceReadyListener );
+                window.CKEDITOR.removeListener(
+                    'instanceReady',
+                    this.$onInstanceReadyListener
+                );
             }
-        },
-
-        /**
-         * Editor onDraw Event
-         * if the editor is to be drawn
-         *
-         * @param {HTMLElement} Container
-         * @param {Object} Editor - controls/editors/Editor
-         */
-        $onDraw : function(Container, Editor)
-        {
-            var self = this;
-
-            // load CKEDITOR
-            require([ URL_OPT_DIR +'bin/package-ckeditor4/ckeditor.js' ], function()
-            {
-                /*
-                CKEDITOR.editorConfig = function( config ) {
-                    config.language = 'fr';
-                    config.uiColor = '#AADC6E';
-                };
-                */
-
-
-                // CKEditor aufbauen
-                // CKEDITOR_BASEPATH = URL_DIR;
-                /*
-                CKEDITOR_NEXGAM_TOOLBAR = [
-                    { name: 'clipboard', items : [ 'Source', ,'Maximize', '-','pcsg_short', 'Templates','-', 'Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-                    { name: 'basicstyles', items : [ 'Bold','Italic', 'Underline', 'Strike','-','Subscript','Superscript','-','RemoveFormat' ] },
-                    { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','NumberedList','BulletedList' ] },
-                    { name: 'pcsg', items : [ 'pcsg_image','-', 'pcsg_link', 'pcsg_unlink' ] },
-                    { name: 'blocks', items : [ 'Format', 'pcsg_youtube' ] }
-                ];
-
-                CKEDITOR_NEXGAM_PLUGINS = '' +
-                    'basicstyles,blockquote,button,clipboard,contextmenu,div,elementspath,enterkey,entities,find,' +
-                    'font,format,indent,justify,keystrokes,list,liststyle,maximize,pastefromword,' +
-                    'pastetext,removeformat,showblocks,showborders,sourcearea,stylescombo,' +
-                    'table,tabletools,specialchar,tab,templates,toolbar,undo,wysiwygarea,wsc,pcsg_image,pcsg_link,pcsg_short,pcsg_youtube';
-
-                CKEDITOR_NEXGAM_CSS = [
-                    URL_USR_DIR +"bin/nexgam3/css/reset.css",
-                    URL_USR_DIR +"bin/nexgam3/css/style.css",
-                    URL_USR_DIR +"bin/nexgam3/css/wysiwyg.css",
-                    URL_USR_DIR +"bin/nexgam3/css/images.css",
-                    URL_USR_DIR +"bin/nexgam3/css/review.css"
-                ];
-
-                CKEDITOR_NEXGAM_BODY_CLASS = 'content left content-inner-container wysiwyg';
-                */
-
-                window.CKEDITOR.on('instanceReady', self.$onInstanceReadyListener );
-
-                Editor.loadInstance( Container, Editor );
-            });
         },
 
         /**
@@ -274,10 +280,29 @@ define([
                 return;
             }
 
+            // resize the editor
+            var Container = this.getContainer(),
+                containerSize = Container.getSize();
+
+            // fckeditor resize, setHeight is sooooooooooo mysterious
+            instance.editor.resize( containerSize.x, containerSize.y );
+
             this.setInstance( instance.editor );
             this.fireEvent( 'loaded', [ this, instance.editor ] );
 
             instance.editor.focus();
+        },
+
+        /**
+         * event : on resize
+         */
+        $onResize : function()
+        {
+            var Container = this.getContainer(),
+                Instance = this.getInstance(),
+                containerSize = Container.getSize();
+
+            Instance.resize( containerSize.x, containerSize.y );
         },
 
         /**
@@ -395,7 +420,7 @@ define([
          */
         $onAddCSS : function(file, Editor)
         {
-            var Instance = Editor.getInstance();
+            var Instance = this.getInstance();
 
             this.$cssFiles[ file ] = true;
 

@@ -1,5 +1,17 @@
 @CHARSET "UTF-8";
 
+.control-editor,
+.control-editor-container {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.control-editor-container {
+    overflow: hidden;
+}
+
+/* ckeditor overwrites font awesome */
 .cke_dialog_contents .qui-button {
     background: none repeat scroll 0 0 #EDEDED;
     border: medium none;
@@ -37,3 +49,6 @@
     font-weight: normal;
     text-decoration: inherit;
 }
+
+div.cke_panel.cke_combopanel.cke_ltr { width: 300px !important; }
+span.cke_rcombo span.cke_styles a span span.cke_text { width: 150px; }
