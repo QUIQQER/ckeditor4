@@ -13,7 +13,6 @@
  * @require qui/utils/Elements
  * @require css!package/quiqqer/ckeditor4/bin/Editor.css
  */
-
 define('package/quiqqer/ckeditor4/bin/Editor', [
 
     'require',
@@ -76,7 +75,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             // load CKEDITOR
-            require([URL_OPT_DIR + 'bin/package-ckeditor4/ckeditor.js'], function () {
+            require([URL_OPT_DIR + 'ckeditor/ckeditor/ckeditor.js'], function () {
                 // set global events
                 window.CKEDITOR.on('instanceReady', function (ev) {
                     var Editor = QUI.Controls.getById(ev.editor.name);
@@ -221,8 +220,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 contentsCss        : data.cssFiles || [],
                 bodyClass          : data.bodyClass,
                 // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                baseFloatZIndex    : zIndex,
-                extraPlugins       : 'abbr,horizontalrule'
+                baseFloatZIndex    : zIndex
+                //extraPlugins       : 'abbr,horizontalrule'
             });
         },
 
