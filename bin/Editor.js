@@ -215,7 +215,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 width              : width,
                 toolbar            : toolbar,
                 allowedContent     : true,
-                extraAllowedContent: 'div(*)[*]{*}, iframe(*)[*]{*}',
+                extraAllowedContent: 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}',
                 stylesSet          : styles,
                 contentsCss        : data.cssFiles || [],
                 bodyClass          : data.bodyClass,
