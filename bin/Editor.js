@@ -205,7 +205,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             data.cssFiles.push(
                 URL_OPT_DIR + 'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
             );
-
+            
             window.CKEDITOR.replace(instance, {
                 customConfig       : '',
                 language           : Locale.getCurrent(),
@@ -220,8 +220,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 contentsCss        : data.cssFiles || [],
                 bodyClass          : data.bodyClass,
                 // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                baseFloatZIndex    : zIndex
-                //extraPlugins       : 'abbr,horizontalrule'
+                baseFloatZIndex    : zIndex,
+                extraPlugins       : self.$parseToolbarToPlugins(toolbar)
             });
         },
 
@@ -418,6 +418,104 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             for (var i = 0, len = params.length; i < len; i++) {
                 Instance.insertHtml("<img src=" + params[i].url + " />");
             }
+        },
+
+        /**
+         * Generate the extra plugins option in dependence of the toolbar
+         * @param toolbar
+         */
+        $parseToolbarToPlugins: function (toolbar) {
+            var extra      = [],
+                buttonList = [];
+
+            if (typeOf(toolbar) == 'array') {
+                buttonList = toolbar.flatten();
+            }
+
+            for (var i = 0, len = buttonList.length; i < len; i++) {
+                switch (buttonList[i]) {
+                    case 'Templates':
+                        extra.push('templates');
+                        break;
+
+                    case 'Find':
+                    case 'Replace':
+                        extra.push('find');
+                        break;
+
+                    case 'SelectAll':
+                        extra.push('selectall');
+                        break;
+
+                    case 'Form':
+                    case 'Checkbox':
+                    case 'Radio':
+                    case 'TextField':
+                    case 'Textarea':
+                    case 'Select':
+                    case 'Button':
+                    case 'ImageButton':
+                    case 'HiddenField':
+                        extra.push('forms');
+                        break;
+
+                    case 'CreateDiv':
+                        extra.push('div');
+                        break;
+
+                    case 'JustifyLeft':
+                    case 'JustifyCenter':
+                    case 'JustifyRight':
+                    case 'JustifyBlock':
+                        extra.push('justify');
+                        break;
+
+                    case 'BidiLtr':
+                    case 'BidiRtl':
+                        extra.push('bidi');
+                        break;
+
+                    case 'Language':
+                        extra.push('language');
+                        break;
+
+                    case 'Link':
+                    case 'Unlink':
+                    case 'Anchor':
+                        extra.push('link');
+                        break;
+
+                    case 'Flash':
+                        extra.push('flash');
+                        break;
+
+                    case 'Smiley':
+                        extra.push('smiley');
+                        break;
+
+                    case 'PageBreak':
+                        extra.push('pagebreak');
+                        break;
+
+                    case 'Iframe':
+                        extra.push('iframe');
+                        break;
+
+                    case 'Font':
+                    case 'FontSize':
+                        extra.push('font');
+                        break;
+
+                    case 'BGColor':
+                    case 'TextColor':
+                        extra.push('colorbutton');
+                        break;
+                }
+            }
+
+            extra = extra.unique();
+
+            return extra.join(',');
         },
 
         /**
