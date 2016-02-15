@@ -564,7 +564,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 if (!UrlGroup.getElement('.qui-button')) {
                     Button = new Element('button', {
                         'class': 'qui-button',
-                        html   : '<span class="icon-picture"></span>',
+                        html   : '<span class="fa fa-picture-o"></span>',
                         events : {
                             click: function () {
                                 self.openMedia({
@@ -620,7 +620,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 Button = new Element('button', {
                     'class': 'qui-button',
-                    html   : '<span class="icon-home"></span>',
+                    html   : '<span class="fa fa-home"></span>',
                     events : {
                         click: function () {
                             self.openProject({
@@ -716,7 +716,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 var Links = new Element('button', {
                     'class': 'qui-button',
-                    html   : '<span class="icon-home"></span>',
+                    html   : '<span class="fa fa-home"></span>',
                     events : {
                         click: function () {
                             self.openProject({
@@ -734,7 +734,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 // image button
                 new Element('button', {
                     'class': 'qui-button',
-                    html   : '<span class="icon-picture"></span>',
+                    html   : '<span class="fa fa-picture-o"></span>',
                     events : {
                         click: function () {
                             self.openMedia({
