@@ -205,7 +205,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             data.cssFiles.push(
                 URL_OPT_DIR + 'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
             );
-            
+
             window.CKEDITOR.replace(instance, {
                 customConfig       : '',
                 language           : Locale.getCurrent(),
