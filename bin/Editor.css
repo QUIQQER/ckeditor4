@@ -42,8 +42,8 @@
     color: #FFFFFF;
 }
 
-.cke_dialog_contents [class^="icon-"],
-.cke_dialog_contents [class*=" icon-"] {
+.cke_dialog_contents [class^="fa-"],
+.cke_dialog_contents [class*=" fa-"] {
     font-family: FontAwesome;
     font-style: normal;
     font-weight: normal;
