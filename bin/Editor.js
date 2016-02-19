@@ -80,7 +80,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 window.CKEDITOR.on('instanceReady', function (ev) {
                     var Editor = QUI.Controls.getById(ev.editor.name);
 
-                    Editor.$onInstanceReadyListener(ev);
+                    if (Editor && "$onInstanceReadyListener" in Editor) {
+                        Editor.$onInstanceReadyListener(ev);
+                    }
                 });
 
                 // http://docs.ckeditor.com/#!/guide/dev_howtos_dialog_windows
@@ -233,12 +235,14 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         $onDestroy: function (Editor) {
             var Instance = Editor.getInstance();
 
+            if (!Instance || !(name in Instance)) {
+                return;
+            }
+
             if (window.CKEDITOR.instances[Instance.name]) {
                 try {
                     window.CKEDITOR.instances[Instance.name].destroy(true);
-
                 } catch (e) {
-
                 }
 
                 window.CKEDITOR.instances[Instance.name] = null;
