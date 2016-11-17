@@ -209,6 +209,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             );
 
             window.CKEDITOR.replace(instance, {
+                skinName           : 'moono-lisa',
                 customConfig       : '',
                 language           : Locale.getCurrent(),
                 baseHref           : URL_DIR,
