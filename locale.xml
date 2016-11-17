@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/ckeditor4" datatype="js,php">
+        <locale name="package.title">
+            <de><![CDATA[QUIQQER - CKEditor Integration]]></de>
+            <en><![CDATA[QUIQQER - CKEditor integration]]></en>
+        </locale>
+        <locale name="package.title">
+            <de><![CDATA[Integration den CKEditor in QUIQQER.]]></de>
+            <en><![CDATA[Integrate the CKEditor into QUIQQER.]]></en>
+        </locale>
+    </groups>
+</locales>
