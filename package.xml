@@ -1,0 +1,15 @@
+<quiqqer>
+    <package>
+        <title>
+            <locale group="quiqqer/quiqqer" var="package.title"/>
+        </title>
+
+        <description>
+            <locale group="quiqqer/quiqqer" var="package.description"/>
+        </description>
+
+        <allowedPaths>
+            <path>URL_OPT_DIR/ckeditor/ckeditor/</path>
+        </allowedPaths>
+    </package>
+</quiqqer>
