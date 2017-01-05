@@ -594,6 +594,13 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                                                     WidthInput.value  = fileData.image_width;
                                                 }
 
+                                                if (!fileData.image_height) {
+                                                    HeightInput.value = '';
+                                                }
+
+                                                if (!fileData.image_width) {
+                                                    WidthInput.value = '';
+                                                }
                                             }, {
                                                 project: data.project,
                                                 fileid : data.id
