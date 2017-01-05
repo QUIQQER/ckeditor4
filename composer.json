@@ -2,7 +2,7 @@
     "name" : "quiqqer/ckeditor4",
     "type" : "quiqqer-library",
     "description" : "CKEditor for the QUIQQER CMS - enable the ckeditor for quiqqer",
-    "version" : "dev-master",
+    "version" : "1.1.0",
     "license" : "GPL-2.0+",
 
     "authors" : [{
