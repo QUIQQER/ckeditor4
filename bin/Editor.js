@@ -156,7 +156,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     for (b = 0, blen = groupEntry.length; b < blen; b++) {
                         buttonEntry = groupEntry[b];
 
-                        if (buttonEntry.type == 'seperator') {
+                        if (buttonEntry.type === 'separator') {
                             group.push('-');
                             continue;
                         }
@@ -218,7 +218,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 width              : width,
                 toolbar            : toolbar,
                 allowedContent     : true,
-                extraAllowedContent: 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}',
+                extraAllowedContent: 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
                 stylesSet          : styles,
                 contentsCss        : data.cssFiles || [],
                 bodyClass          : data.bodyClass,
@@ -552,18 +552,18 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 // image button
                 var UrlGroup = this.getContentElement('info', 'txtUrl')
-                    .getElement()
+                                   .getElement()
                     .$;
 
                 var UrlInput = UrlGroup.getElement('input[type="text"]');
 
                 var HeightInput = this.getContentElement('info', 'txtHeight')
-                    .getElement().$
-                    .getElement('input[type="text"]');
+                                      .getElement().$
+                                      .getElement('input[type="text"]');
 
                 var WidthInput = this.getContentElement('info', 'txtWidth')
-                    .getElement().$
-                    .getElement('input[type="text"]');
+                                     .getElement().$
+                                     .getElement('input[type="text"]');
 
 
                 if (!UrlGroup.getElement('.qui-button')) {
@@ -620,7 +620,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 // link button
                 var LinkGroup = this.getContentElement('Link', 'txtUrl')
-                    .getElement()
+                                    .getElement()
                     .$;
 
 
@@ -688,10 +688,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 orgCommit.call(this, data);
 
                 Protokoll = dialogDefinition.dialog
-                    .getContentElement('info', 'protocol')
-                    .getElement()
-                    .$
-                    .getElement('select');
+                                            .getContentElement('info', 'protocol')
+                                            .getElement()
+                                            .$
+                                            .getElement('select');
 
                 data.url = {
                     protocol: Protokoll.value,
@@ -707,7 +707,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 oldOnShow.bind(this)();
 
                 var UrlGroup = this.getContentElement('info', 'url')
-                    .getElement()
+                                   .getElement()
                     .$;
 
                 if (UrlGroup.getElement('.qui-button')) {
@@ -717,9 +717,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 var UrlInput = UrlGroup.getElement('input[type="text"]');
 
                 Protokoll = this.getContentElement('info', 'protocol')
-                    .getElement()
-                    .$
-                    .getElement('select');
+                                .getElement()
+                                .$
+                                .getElement('select');
 
                 UrlInput.setStyles({
                     'float': 'left',
