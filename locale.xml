@@ -6,7 +6,7 @@
             <de><![CDATA[QUIQQER - CKEditor Integration]]></de>
             <en><![CDATA[QUIQQER - CKEditor integration]]></en>
         </locale>
-        <locale name="package.title">
+        <locale name="package.description">
             <de><![CDATA[Integration den CKEditor in QUIQQER.]]></de>
             <en><![CDATA[Integrate the CKEditor into QUIQQER.]]></en>
         </locale>
