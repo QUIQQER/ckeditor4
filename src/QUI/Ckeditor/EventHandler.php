@@ -2,7 +2,6 @@
 
 namespace QUI\Ckeditor;
 
-
 use QUI\Ckeditor\Plugins\Manager;
 use QUI\Package\Package;
 use QUI\System\Log;
@@ -36,6 +35,5 @@ class EventHandler
         $PluginManager = new Manager();
 
         $PluginManager->updatePlugins();
-
     }
 }

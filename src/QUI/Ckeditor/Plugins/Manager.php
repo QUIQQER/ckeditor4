@@ -135,7 +135,6 @@ class Manager
 
 
             if (!is_dir($fullpath)) {
-
                 continue;
             }
 
@@ -167,7 +166,6 @@ class Manager
             $fullpath = $this->activePluginDir . "/" . $entry;
 
             if (!is_dir($fullpath)) {
-
                 continue;
             }
 
@@ -197,7 +195,6 @@ class Manager
             }
 
             foreach (scandir($srcDir) as $entry) {
-
                 if ($entry == "." || $entry == "..") {
                     continue;
                 }
@@ -220,7 +217,6 @@ class Manager
                 );
             }
         }
-
     }
 
     /**
@@ -235,14 +231,12 @@ class Manager
         );
 
         foreach ($srcDirs as $srcDir) {
-
             if (!is_dir($srcDir)) {
                 return;
             }
 
 
             foreach (scandir($srcDir) as $entry) {
-
                 if ($entry == "." || $entry == "..") {
                     continue;
                 }
@@ -280,5 +274,4 @@ class Manager
     {
         return \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "/plugins";
     }
-
 }
