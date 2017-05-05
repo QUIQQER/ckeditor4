@@ -22,11 +22,13 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
     'Ajax',
     'qui/utils/Math',
     'qui/utils/Elements',
+    'package/quiqqer/ckeditor4/bin/Settings',
 
     'css!package/quiqqer/ckeditor4/bin/Editor.css'
 
-], function (require, QUI, Editor, Locale, Ajax, QUIMath, QUIElements) {
+], function (require, QUI, Editor, Locale, Ajax, QUIMath, QUIElements, Settings) {
     "use strict";
+
 
     return new Class({
 
@@ -103,6 +105,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          * @param {Object} data - Editor settings data
          */
         $loadInstance: function (data) {
+
             if (typeof window.CKEDITOR === 'undefined') {
                 return;
             }
@@ -112,9 +115,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 Textarea  = false,
                 size      = Container.getSize();
 
+
             if (!Container.getElement('textarea')) {
                 Textarea = new Element('textarea', {
-                    id    : this.getId(),
+                    id    : self.getId(),
                     styles: {
                         height: size.y,
                         width : size.x
@@ -208,24 +212,30 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 URL_OPT_DIR + 'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
             );
 
-            window.CKEDITOR.replace(instance, {
-                skinName           : 'moono-lisa',
-                customConfig       : '',
-                language           : Locale.getCurrent(),
-                baseHref           : URL_DIR,
-                basePath           : URL_DIR,
-                height             : height,
-                width              : width,
-                toolbar            : toolbar,
-                allowedContent     : true,
-                extraAllowedContent: 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
-                stylesSet          : styles,
-                contentsCss        : data.cssFiles || [],
-                bodyClass          : data.bodyClass,
-                // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                baseFloatZIndex    : zIndex,
-                extraPlugins       : self.$parseToolbarToPlugins(toolbar)
+
+            Settings.getPlugins().then(function (plugins) {
+                var extraPlugins = plugins.join(",");
+
+                window.CKEDITOR.replace(instance, {
+                    skinName           : 'moono-lisa',
+                    customConfig       : '',
+                    language           : Locale.getCurrent(),
+                    baseHref           : URL_DIR,
+                    basePath           : URL_DIR,
+                    height             : height,
+                    width              : width,
+                    toolbar            : toolbar,
+                    allowedContent     : true,
+                    extraAllowedContent: 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
+                    stylesSet          : styles,
+                    contentsCss        : data.cssFiles || [],
+                    bodyClass          : data.bodyClass,
+                    // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
+                    baseFloatZIndex    : zIndex,
+                    extraPlugins       : extraPlugins
+                });
             });
+
         },
 
         /**
@@ -255,7 +265,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     this.$onInstanceReadyListener
                 );
             }
-        },
+        }
+        ,
 
         /**
          * event : instance ready
@@ -279,7 +290,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             this.fireEvent('loaded', [this, instance.editor]);
 
             instance.editor.focus();
-        },
+        }
+        ,
 
         /**
          * event : on resize
@@ -290,7 +302,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 containerSize = Container.getSize();
 
             Instance.resize(containerSize.x, containerSize.y);
-        },
+        }
+        ,
 
         /**
          * Editor onSetContent Event
@@ -302,7 +315,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Editor.getInstance()) {
                 Editor.getInstance().setData(content);
             }
-        },
+        }
+        ,
 
         /**
          * Editor onGetContent Event
@@ -313,7 +327,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Editor.getInstance()) {
                 Editor.setAttribute('content', Editor.getInstance().getData());
             }
-        },
+        }
+        ,
 
         /**
          * Set the focus to the editor
@@ -322,7 +337,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (this.getInstance()) {
                 this.getInstance().focus();
             }
-        },
+        }
+        ,
 
         /**
          * Switch to source mode
@@ -331,7 +347,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (this.getInstance()) {
                 this.getInstance().setMode('source');
             }
-        },
+        }
+        ,
 
         /**
          * Switch to wysiwyg editor
@@ -340,7 +357,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (this.getInstance()) {
                 this.getInstance().setMode('wysiwyg');
             }
-        },
+        }
+        ,
 
         /**
          * Hide the toolbar
@@ -351,7 +369,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Toolbar) {
                 Toolbar.setStyle('display', 'none');
             }
-        },
+        }
+        ,
 
         /**
          * show the toolbar
@@ -362,7 +381,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Toolbar) {
                 Toolbar.setStyle('display', null);
             }
-        },
+        }
+        ,
 
         /**
          * Set the height of the instance
@@ -375,7 +395,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             this.setAttribute('height', height);
-        },
+        }
+        ,
 
         /**
          * Set the height of the instance
@@ -388,7 +409,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             this.setAttribute('width', width);
-        },
+        }
+        ,
 
         /**
          * event : on add css
@@ -411,7 +433,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 Doc.head.appendChild(Link);
             }
-        },
+        }
+        ,
 
         /**
          * event : on Drop
@@ -423,105 +446,110 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             for (var i = 0, len = params.length; i < len; i++) {
                 Instance.insertHtml("<img src=" + params[i].url + " />");
             }
-        },
+        }
+        ,
 
-        /**
-         * Generate the extra plugins option in dependence of the toolbar
-         * @param toolbar
-         */
-        $parseToolbarToPlugins: function (toolbar) {
-            var extra      = [],
-                buttonList = [];
-
-            if (typeOf(toolbar) == 'array') {
-                buttonList = toolbar.flatten();
-            }
-
-            for (var i = 0, len = buttonList.length; i < len; i++) {
-                switch (buttonList[i]) {
-                    case 'Templates':
-                        extra.push('templates');
-                        break;
-
-                    case 'Find':
-                    case 'Replace':
-                        extra.push('find');
-                        break;
-
-                    case 'SelectAll':
-                        extra.push('selectall');
-                        break;
-
-                    case 'Form':
-                    case 'Checkbox':
-                    case 'Radio':
-                    case 'TextField':
-                    case 'Textarea':
-                    case 'Select':
-                    case 'Button':
-                    case 'ImageButton':
-                    case 'HiddenField':
-                        extra.push('forms');
-                        break;
-
-                    case 'CreateDiv':
-                        extra.push('div');
-                        break;
-
-                    case 'JustifyLeft':
-                    case 'JustifyCenter':
-                    case 'JustifyRight':
-                    case 'JustifyBlock':
-                        extra.push('justify');
-                        break;
-
-                    case 'BidiLtr':
-                    case 'BidiRtl':
-                        extra.push('bidi');
-                        break;
-
-                    case 'Language':
-                        extra.push('language');
-                        break;
-
-                    case 'Link':
-                    case 'Unlink':
-                    case 'Anchor':
-                        extra.push('link');
-                        break;
-
-                    case 'Flash':
-                        extra.push('flash');
-                        break;
-
-                    case 'Smiley':
-                        extra.push('smiley');
-                        break;
-
-                    case 'PageBreak':
-                        extra.push('pagebreak');
-                        break;
-
-                    case 'Iframe':
-                        extra.push('iframe');
-                        break;
-
-                    case 'Font':
-                    case 'FontSize':
-                        extra.push('font');
-                        break;
-
-                    case 'BGColor':
-                    case 'TextColor':
-                        extra.push('colorbutton');
-                        break;
-                }
-            }
-
-            extra = extra.unique();
-
-            return extra.join(',');
-        },
+        // /**
+        //  * Generate the extra plugins option in dependence of the toolbar
+        //  * @param toolbar
+        //  */
+        // $parseToolbarToPlugins: function (toolbar) {
+        //     var extra      = [],
+        //         buttonList = [];
+        //
+        //     if (typeOf(toolbar) == 'array') {
+        //         buttonList = toolbar.flatten();
+        //     }
+        //
+        //     for (var i = 0, len = buttonList.length; i < len; i++) {
+        //         switch (buttonList[i]) {
+        //             case 'Templates':
+        //                 extra.push('templates');
+        //                 break;
+        //
+        //             case 'Find':
+        //             case 'Replace':
+        //                 extra.push('find');
+        //                 break;
+        //
+        //             case 'SelectAll':
+        //                 extra.push('selectall');
+        //                 break;
+        //
+        //             case 'Form':
+        //             case 'Checkbox':
+        //             case 'Radio':
+        //             case 'TextField':
+        //             case 'Textarea':
+        //             case 'Select':
+        //             case 'Button':
+        //             case 'ImageButton':
+        //             case 'HiddenField':
+        //                 extra.push('forms');
+        //                 break;
+        //
+        //             case 'CreateDiv':
+        //                 extra.push('div');
+        //                 break;
+        //
+        //             case 'JustifyLeft':
+        //             case 'JustifyCenter':
+        //             case 'JustifyRight':
+        //             case 'JustifyBlock':
+        //                 extra.push('justify');
+        //                 break;
+        //
+        //             case 'BidiLtr':
+        //             case 'BidiRtl':
+        //                 extra.push('bidi');
+        //                 break;
+        //
+        //             case 'Language':
+        //                 extra.push('language');
+        //                 break;
+        //
+        //             case 'Link':
+        //             case 'Unlink':
+        //             case 'Anchor':
+        //                 extra.push('link');
+        //                 break;
+        //
+        //             case 'Flash':
+        //                 extra.push('flash');
+        //                 break;
+        //
+        //             case 'Smiley':
+        //                 extra.push('smiley');
+        //                 break;
+        //
+        //             case 'PageBreak':
+        //                 extra.push('pagebreak');
+        //                 break;
+        //
+        //             case 'Iframe':
+        //                 extra.push('iframe');
+        //                 break;
+        //
+        //             case 'Font':
+        //             case 'FontSize':
+        //                 extra.push('font');
+        //                 break;
+        //
+        //             case 'BGColor':
+        //             case 'TextColor':
+        //                 extra.push('colorbutton');
+        //                 break;
+        //         }
+        //     }
+        //
+        //     //extra.push('wordcount');
+        //
+        //     extra = extra.unique();
+        //
+        //
+        //     return extra.join(',');
+        // }
+        // ,
 
         /**
          * edit the image dialog
@@ -552,18 +580,18 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 // image button
                 var UrlGroup = this.getContentElement('info', 'txtUrl')
-                                   .getElement()
+                    .getElement()
                     .$;
 
                 var UrlInput = UrlGroup.getElement('input[type="text"]');
 
                 var HeightInput = this.getContentElement('info', 'txtHeight')
-                                      .getElement().$
-                                      .getElement('input[type="text"]');
+                    .getElement().$
+                    .getElement('input[type="text"]');
 
                 var WidthInput = this.getContentElement('info', 'txtWidth')
-                                     .getElement().$
-                                     .getElement('input[type="text"]');
+                    .getElement().$
+                    .getElement('input[type="text"]');
 
 
                 if (!UrlGroup.getElement('.qui-button')) {
@@ -620,7 +648,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 // link button
                 var LinkGroup = this.getContentElement('Link', 'txtUrl')
-                                    .getElement()
+                    .getElement()
                     .$;
 
 
@@ -655,7 +683,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             };
 
             return ev;
-        },
+        }
+        ,
 
         /**
          * edit the link dialog
@@ -688,10 +717,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 orgCommit.call(this, data);
 
                 Protokoll = dialogDefinition.dialog
-                                            .getContentElement('info', 'protocol')
-                                            .getElement()
-                                            .$
-                                            .getElement('select');
+                    .getContentElement('info', 'protocol')
+                    .getElement()
+                    .$
+                    .getElement('select');
 
                 data.url = {
                     protocol: Protokoll.value,
@@ -707,7 +736,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 oldOnShow.bind(this)();
 
                 var UrlGroup = this.getContentElement('info', 'url')
-                                   .getElement()
+                    .getElement()
                     .$;
 
                 if (UrlGroup.getElement('.qui-button')) {
@@ -717,9 +746,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 var UrlInput = UrlGroup.getElement('input[type="text"]');
 
                 Protokoll = this.getContentElement('info', 'protocol')
-                                .getElement()
-                                .$
-                                .getElement('select');
+                    .getElement()
+                    .$
+                    .getElement('select');
 
                 UrlInput.setStyles({
                     'float': 'left',
@@ -764,5 +793,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
             return ev;
         }
-    });
-});
+    })
+        ;
+})
+;

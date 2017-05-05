@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<events>
+    <event on="onPackageSetup" fire="\QUI\Ckeditor\EventHandler::onPackageSetup" />
+    <event on="onPackageUpdate" fire="\QUI\Ckeditor\EventHandler::onPackageUpdate" />
+</events>

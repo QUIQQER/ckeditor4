@@ -10,5 +10,43 @@
             <de><![CDATA[Integration den CKEditor in QUIQQER.]]></de>
             <en><![CDATA[Integrate the CKEditor into QUIQQER.]]></en>
         </locale>
+        <locale name="exception.plugin.activate.plugin.not.found">
+            <de><![CDATA[Das angegeben Plugin wurde nicht gefunden.]]></de>
+            <en><![CDATA[The provided plugin was not found.]]></en>
+        </locale>
+        <locale name="exception.plugin.already.active">
+            <de><![CDATA[Das angegebene Plugin ist bereits aktiv]]></de>
+            <en><![CDATA[The plugin is active already.]]></en>
+        </locale>
+        <locale name="exception.plugin.activate.plugin.not.active">
+            <de><![CDATA[Das angegebene Plugin ist bereits deaktiviert]]></de>
+            <en><![CDATA[The given plugin is not active]]></en>
+        </locale>
+
+        <!--Settings -->
+        <locale name="editors.settings.plugins.table.header.state">
+            <de><![CDATA[Status]]></de>
+            <en><![CDATA[State]]></en>
+        </locale>
+        <locale name="editors.settings.plugins.table.header.name">
+            <de><![CDATA[Name]]></de>
+            <en><![CDATA[Name]]></en>
+        </locale>
+        <locale name="editors.settings.plugins.table.button.activate">
+            <de><![CDATA[Aktivieren]]></de>
+            <en><![CDATA[Activate]]></en>
+        </locale>
+        <locale name="editors.settings.plugins.table.button.deactivate">
+            <de><![CDATA[Deaktivieren]]></de>
+            <en><![CDATA[Deactivate]]></en>
+        </locale>
+        <locale name="message.settings.plugins.activation.success">
+            <de><![CDATA[Plugin erfolgreich aktiviert]]></de>
+            <en><![CDATA[Plugin enabled successfully]]></en>
+        </locale>
+        <locale name="message.settings.plugins.deactivation.success">
+            <de><![CDATA[Plugin erfolgreich deaktiviert]]></de>
+            <en><![CDATA[Plugin disabled successfully]]></en>
+        </locale>
     </groups>
 </locales>
