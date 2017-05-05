@@ -9,4 +9,3 @@ QUI::$Ajax->registerFunction(
     },
     array()
 );
-
