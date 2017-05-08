@@ -12,7 +12,6 @@ QUI::$Ajax->registerFunction(
         } catch (\Exception $Exception) {
             QUI::getMessagesHandler()->addError($Exception->getMessage());
         }
-
     },
     array('File')
 );
