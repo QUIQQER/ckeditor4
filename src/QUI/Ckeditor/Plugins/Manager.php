@@ -3,6 +3,7 @@
 
 namespace QUI\Ckeditor\Plugins;
 
+use QUI\Archiver\Zip;
 use QUI\Exception;
 use QUI\System\Log;
 use QUI\Utils\Security\Orthos;
@@ -23,6 +24,7 @@ class Manager
 
     /**
      * List of plugins which should be installed
+     *
      * @var array
      */
     protected $blacklist = array(
@@ -185,6 +187,67 @@ class Manager
         }
 
         return $result;
+    }
+
+    /**
+     * Installs a plugin zip file from the given path
+     *
+     * @param $pluginpath
+     *
+     * @throws Exception
+     */
+    public function installPlugin($pluginpath)
+    {
+        # Check if file exists
+        if (!file_exists($pluginpath)) {
+            throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.not.found"));
+        }
+
+        $tmpDir = \QUI::getTemp()->createFolder();
+        copy(
+            $pluginpath,
+            $tmpDir . "/archive.zip"
+        );
+
+
+        $Zip = new \ZipArchive();
+
+        if ($Zip->open($tmpDir . "/archive.zip") === false) {
+            throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.invalid.format"));
+        }
+
+        if ($Zip->extractTo($tmpDir . "/content") === false) {
+            throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.extract.failed"));
+        }
+
+        foreach (scandir($tmpDir . "/content") as $entry) {
+            if ($entry == "." || $entry == "..") {
+                continue;
+            }
+
+
+            if (is_dir($this->installedPluginDir . "/" . $entry)) {
+                throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.exists"));
+            }
+
+            if (is_dir($this->activePluginDir . "/" . $entry)) {
+                throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.exists"));
+            }
+
+            rename(
+                $tmpDir . "/content/" . $entry,
+                $this->installedPluginDir . "/" . $entry
+            );
+        }
+
+        File::deleteDir($tmpDir);
+
+        \QUI::getMessagesHandler()->addSuccess(
+            \QUI::getLocale()->get(
+                "quiqqer/ckeditor4",
+                "message.plugin.install.success"
+            )
+        );
     }
 
     #########################################

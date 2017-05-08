@@ -23,6 +23,39 @@
             <en><![CDATA[The given plugin is not active]]></en>
         </locale>
 
+        <!--Upload-->
+        <locale name="window.upload.title">
+            <de><![CDATA[Plugin hochladen]]></de>
+            <en><![CDATA[Upload plugin]]></en>
+        </locale>
+        <locale name="window.upload.button.upload">
+            <de><![CDATA[Hochladen]]></de>
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="message.window.upload.complete">
+            <de><![CDATA[Der Upload ist beendet und das Plugin wird nun installiert]]></de>
+            <en><![CDATA[The upload is complete and the plugin will now get installed]]></en>
+        </locale>
+        <locale name="exception.install.file.invalid.format">
+            <de>
+                <![CDATA[Die hochegaldene Datei hat das falsche Format oder ist beschädigt. Bitte laden Sie ein intaktes Ziparchiv hoch.]]></de>
+            <en>
+                <![CDATA[The uploaded file is either corrupted or does not have the correct format. Please upload a zip file.]]></en>
+        </locale>
+        <locale name="exception.install.file.extract.failed">
+            <de>
+                <![CDATA[Während des Entpackens des Archivs ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.]]></de>
+            <en><![CDATA[An error occured while extracteing the archive. Please try again]]></en>
+        </locale>
+        <locale name="message.plugin.install.success">
+            <de><![CDATA[Das Plugin wurde erfolgreich installiert]]></de>
+            <en><![CDATA[The plugin has been installed successfully]]></en>
+        </locale>
+        <locale name="exception.install.file.exists">
+            <de><![CDATA[Ein Plugin mit diesem Namen existiert bereits!]]></de>
+            <en><![CDATA[A plugin with the same name is installed already]]></en>
+        </locale>
+
         <!--Settings -->
         <locale name="editors.settings.plugins.table.header.state">
             <de><![CDATA[Status]]></de>
@@ -39,6 +72,10 @@
         <locale name="editors.settings.plugins.table.button.deactivate">
             <de><![CDATA[Deaktivieren]]></de>
             <en><![CDATA[Deactivate]]></en>
+        </locale>
+        <locale name="editors.settings.plugins.table.button.upload">
+            <de><![CDATA[Hochladen]]></de>
+            <en><![CDATA[Upload]]></en>
         </locale>
         <locale name="message.settings.plugins.activation.success">
             <de><![CDATA[Plugin erfolgreich aktiviert]]></de>

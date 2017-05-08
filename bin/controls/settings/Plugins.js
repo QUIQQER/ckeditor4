@@ -64,6 +64,15 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                         events  : {
                             onClick: this.$toggleState
                         }
+                    }, {
+                        name  : 'upload',
+                        text  : QUILocale.get(
+                            "quiqqer/ckeditor4",
+                            "editors.settings.plugins.table.button.upload"
+                        ),
+                        events: {
+                            onClick: this.$displayUpload
+                        }
                     }],
                     height     : "500",
                     columnModel: [
@@ -98,6 +107,8 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                         var TableButtons = self.$Grid.getAttribute('buttons');
 
                         var StateBtn = TableButtons.state;
+
+                        console.log(TableButtons);
 
                         var data = self.$Grid.getSelectedData()[0];
 
@@ -271,8 +282,16 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                         onError     : reject
                     });
                 });
-            }
+            },
 
+            $displayUpload: function () {
+                var self = this;
+
+                require(['package/quiqqer/ckeditor4/bin/windows/Upload'], function (Window) {
+                    new Window({}).open();
+                });
+
+            }
         }
     );
 });
