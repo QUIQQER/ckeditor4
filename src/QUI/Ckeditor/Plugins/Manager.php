@@ -211,7 +211,8 @@ class Manager
                     continue;
                 }
 
-                File::dircopy(
+
+                $this->copyDir(
                     $srcDir . "/" . $entry,
                     $targetDir . "/" . $entry
                 );
@@ -264,7 +265,6 @@ class Manager
         }
     }
 
-
     /**
      * Returns the plugin dir
      *
@@ -273,5 +273,35 @@ class Manager
     public function getPluginDir()
     {
         return \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "/plugins";
+    }
+
+    /**
+     * Recursively copies the target directory to the target location
+     *
+     * @param $src
+     * @param $target
+     */
+    public function copyDir($src, $target)
+    {
+        if (!is_dir($target)) {
+            mkdir($target, 0755);
+        }
+
+        $entries = scandir($src);
+
+        foreach ($entries as $entry) {
+            if ($entry == "." || $entry == "..") {
+                continue;
+            }
+
+            $fullpath = $src . "/" . $entry;
+
+            if (is_dir($fullpath)) {
+                $this->copyDir($fullpath, $target . "/" . $entry);
+                continue;
+            }
+
+            copy($fullpath, $target . "/" . $entry);
+        }
     }
 }
