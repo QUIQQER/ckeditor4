@@ -1,0 +1,89 @@
+{
+  "codesnippetgeshi": [
+    "ajax",
+    "codesnippet"
+  ],
+  "autolink": [
+    "ajax",
+    "clipboard"
+  ],
+  "widget": [
+    "clipboard",
+    "lineutils",
+    "widgetselection"
+  ],
+  "pastetext": [
+    "clipboard"
+  ],
+  "notification": [
+    "toolbar"
+  ],
+  "bbcode": [
+    "entities"
+  ],
+  "indentlist": [
+    "indent"
+  ],
+  "list": [
+    "indentlist"
+  ],
+  "autoembed": [
+    "undo",
+    "autolink"
+  ],
+  "dialogui": [
+    "dialog"
+  ],
+  "link": [
+    "fakeobjects",
+    "dialog"
+  ],
+  "colorbutton": [
+    "floatpanel",
+    "panelbutton"
+  ],
+  "notificationaggregator": [
+    "notification"
+  ],
+  "embedbase": [
+    "notificationaggregator",
+    "widget"
+  ],
+  "floatpanel": [
+    "panel"
+  ],
+  "panelbutton": [
+    "button"
+  ],
+  "codesnippet": [
+    "widget",
+    "embedbase"
+  ],
+  "ajax": [
+    "xml"
+  ],
+  "embed": [
+    "embedbase"
+  ],
+  "embedsemantic": [
+    "embedbase"
+  ],
+  "toolbar": [
+    "button"
+  ],
+  "a11yhelp": [
+    "dialog"
+  ],
+  "about": [
+    "dialog"
+  ],
+  "clipboard": [
+    "dialog"
+  ],
+  "dialogadvtab": [
+    "dialog"
+  ],
+  "colordialog": [
+    "dialog"
+  ]
+}

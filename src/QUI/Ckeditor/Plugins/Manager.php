@@ -4,14 +4,31 @@
 namespace QUI\Ckeditor\Plugins;
 
 use QUI\Exception;
+use QUI\System\Log;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File;
 
+/**
+ * Class Manager
+ *
+ * @package QUI\Ckeditor\Plugins
+ */
 class Manager
 {
 
     protected $activePluginDir;
     protected $installedPluginDir;
+
+    protected $dependencies;
+
+    /**
+     * List of plugins which should be installed
+     * @var array
+     */
+    protected $blacklist = array(
+        "divarea",
+        "copyformatting"
+    );
 
 
     /**
@@ -32,193 +49,9 @@ class Manager
         }
     }
 
-    /**
-     * Activates the given plugin name
-     *
-     * @param $pluginName
-     *
-     * @throws Exception
-     */
-    public function activate($pluginName)
-    {
-        $pluginName = Orthos::clearPath($pluginName);
-        $pluginName = str_replace("/", "", $pluginName);
-
-        if (!is_dir($this->installedPluginDir . "/" . $pluginName)) {
-            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.found"));
-        }
-
-        if (is_dir($this->activePluginDir . "/" . $pluginName)) {
-            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.already.active"));
-        }
-
-        rename($this->installedPluginDir . "/" . $pluginName, $this->activePluginDir . "/" . $pluginName);
-    }
-
-    /**
-     * Deactivates the given plugin name
-     *
-     * @param $pluginName
-     *
-     * @throws Exception
-     */
-    public function deactivate($pluginName)
-    {
-        $pluginName = Orthos::clearPath($pluginName);
-        $pluginName = str_replace("/", "", $pluginName);
-
-        if (!is_dir($this->activePluginDir . "/" . $pluginName)) {
-            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.active"));
-        }
-
-        if (is_dir($this->installedPluginDir . "/" . $pluginName)) {
-            File::deleteDir($this->activePluginDir . "/" . $pluginName);
-
-            return;
-        }
-
-        rename($this->activePluginDir . "/" . $pluginName, $this->installedPluginDir . "/" . $pluginName);
-    }
-
-    /**
-     * Returns a list of all plugins and their details
-     * Format:
-     * array(
-     *  [0] => array(
-     *      ["name"] => "pluginname",
-     *      ["state"] => 0|1  (1 for active; 0 for inactive)
-     *  )
-     * )
-     *
-     * @return array
-     */
-    public function getAllPlugins()
-    {
-        $result = array();
-
-        foreach ($this->getActivePlugins() as $plugin) {
-            $result[] = array(
-                'name'  => $plugin,
-                'state' => 1
-            );
-        }
-
-        foreach ($this->getInstalledPlugins() as $plugin) {
-            $result[] = array(
-                'name'  => $plugin,
-                'state' => 0
-            );
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns all installed plugins
-     *
-     * @return string[] - array of plugin names
-     */
-    public function getInstalledPlugins()
-    {
-        $result = array();
-
-        $content = scandir($this->installedPluginDir);
-        if ($content === false) {
-            return array();
-        }
-
-        foreach ($content as $entry) {
-            if ($entry == "." || $entry == "..") {
-                continue;
-            }
-            $fullpath = $this->installedPluginDir . "/" . $entry;
-
-
-            if (!is_dir($fullpath)) {
-                continue;
-            }
-
-
-            $result[] = $entry;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns all active plugins
-     *
-     * @return string[] - Array of active plugin names
-     */
-    public function getActivePlugins()
-    {
-        $result = array();
-
-        $content = scandir($this->activePluginDir);
-        if ($content === false) {
-            return array();
-        }
-
-        foreach ($content as $entry) {
-            if ($entry == "." || $entry == "..") {
-                continue;
-            }
-            $fullpath = $this->activePluginDir . "/" . $entry;
-
-            if (!is_dir($fullpath)) {
-                continue;
-            }
-
-            $result[] = $entry;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Installs the plugins from the source packages quiqqer/ckeditor4 and ckeditor4/ckeditor4
-     *
-     */
-    public function installPluginsFromSource()
-    {
-        $srcDirs = array(
-            OPT_DIR . "ckeditor/ckeditor/plugins",
-            OPT_DIR . "quiqqer/ckeditor4/plugins"
-
-        );
-
-        foreach ($srcDirs as $srcDir) {
-            $targetDir = $this->installedPluginDir;
-
-            if (!is_dir($srcDir)) {
-                return;
-            }
-
-            foreach (scandir($srcDir) as $entry) {
-                if ($entry == "." || $entry == "..") {
-                    continue;
-                }
-
-                if (!is_dir($srcDir . "/" . $entry)) {
-                    continue;
-                }
-
-                if (is_dir($targetDir . "/" . $entry)) {
-                    continue;
-                }
-
-                if (is_dir($this->activePluginDir . "/" . $entry)) {
-                    continue;
-                }
-
-
-                $this->copyDir(
-                    $srcDir . "/" . $entry,
-                    $targetDir . "/" . $entry
-                );
-            }
-        }
-    }
+    #########################################
+    #             Installation              #
+    #########################################
 
     /**
      * Updates the plugins
@@ -227,7 +60,8 @@ class Manager
     {
         $srcDirs = array(
             OPT_DIR . "ckeditor/ckeditor/plugins",
-            OPT_DIR . "quiqqer/ckeditor4/plugins"
+            OPT_DIR . "quiqqer/ckeditor4/plugins/quiqqer",
+            OPT_DIR . "quiqqer/ckeditor4/plugins/ckeditor4",
 
         );
 
@@ -263,6 +97,332 @@ class Manager
                 );
             }
         }
+    }
+
+    /**
+     * Installs the plugins from the source packages quiqqer/ckeditor4 and ckeditor4/ckeditor4
+     *
+     */
+    public function installPluginsFromSource()
+    {
+        $srcDirs = array(
+            OPT_DIR . "ckeditor/ckeditor/plugins",
+            OPT_DIR . "quiqqer/ckeditor4/plugins/quiqqer",
+            OPT_DIR . "quiqqer/ckeditor4/plugins/ckeditor4"
+
+        );
+
+        foreach ($srcDirs as $srcDir) {
+            $targetDir = $this->installedPluginDir;
+
+            if (!is_dir($srcDir)) {
+                return;
+            }
+
+            foreach (scandir($srcDir) as $entry) {
+                if ($entry == "." || $entry == "..") {
+                    continue;
+                }
+
+                if (!is_dir($srcDir . "/" . $entry)) {
+                    continue;
+                }
+
+                if (is_dir($targetDir . "/" . $entry)) {
+                    continue;
+                }
+
+                if (is_dir($this->activePluginDir . "/" . $entry)) {
+                    continue;
+                }
+
+                if (in_array($entry, $this->blacklist)) {
+                    continue;
+                }
+
+                $this->copyDir(
+                    $srcDir . "/" . $entry,
+                    $targetDir . "/" . $entry
+                );
+            }
+        }
+
+        if (file_exists(OPT_DIR . "quiqqer/ckeditor4/plugins/dependencies.json")) {
+            copy(
+                OPT_DIR . "quiqqer/ckeditor4/plugins/dependencies.json",
+                $this->getPluginDir() . "/dependencies.json"
+            );
+        }
+    }
+
+    /**
+     * Returns all installed plugins
+     *
+     * @return string[] - array of plugin names
+     */
+    public function getInstalledPlugins()
+    {
+        $result = array();
+
+        $content = scandir($this->installedPluginDir);
+        if ($content === false) {
+            return array();
+        }
+
+        foreach ($content as $entry) {
+            if ($entry == "." || $entry == "..") {
+                continue;
+            }
+            $fullpath = $this->installedPluginDir . "/" . $entry;
+
+
+            if (!is_dir($fullpath)) {
+                continue;
+            }
+
+
+            $result[] = $entry;
+        }
+
+        return $result;
+    }
+
+    #########################################
+    #             Enable/Disable            #
+    #########################################
+
+    /**
+     * Activates the given plugin name
+     *
+     * @param $pluginName
+     *
+     * @throws Exception
+     */
+    public function activate($pluginName)
+    {
+        $pluginName = Orthos::clearPath($pluginName);
+        $pluginName = str_replace("/", "", $pluginName);
+
+        if (!is_dir($this->installedPluginDir . "/" . $pluginName)) {
+            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.found"));
+        }
+
+        if (is_dir($this->activePluginDir . "/" . $pluginName)) {
+            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.already.active"));
+        }
+
+        $deps = $this->getDependencies($pluginName);
+        foreach ($deps as $dep) {
+            try {
+                $this->activate($dep);
+            } catch (\Exception $Exception) {
+
+            }
+
+        }
+
+        rename($this->installedPluginDir . "/" . $pluginName, $this->activePluginDir . "/" . $pluginName);
+    }
+
+    /**
+     * Deactivates the given plugin name
+     *
+     * @param $pluginName
+     *
+     * @throws Exception
+     */
+    public function deactivate($pluginName)
+    {
+        $pluginName = Orthos::clearPath($pluginName);
+        $pluginName = str_replace("/", "", $pluginName);
+
+        if (!is_dir($this->activePluginDir . "/" . $pluginName)) {
+            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.active"));
+        }
+
+        if (is_dir($this->installedPluginDir . "/" . $pluginName)) {
+            File::deleteDir($this->activePluginDir . "/" . $pluginName);
+
+            return;
+        }
+
+        foreach ($this->getDependentPlugins($pluginName) as $depName) {
+            try {
+                $this->deactivate($depName);
+            } catch (\Exception $Exception) {
+            }
+
+        }
+
+        rename($this->activePluginDir . "/" . $pluginName, $this->installedPluginDir . "/" . $pluginName);
+    }
+
+    /**
+     * Returns all active plugins
+     *
+     * @return string[] - Array of active plugin names
+     */
+    public function getActivePlugins()
+    {
+        $result = array();
+
+        $content = scandir($this->activePluginDir);
+        if ($content === false) {
+            return array();
+        }
+
+        foreach ($content as $entry) {
+            if ($entry == "." || $entry == "..") {
+                continue;
+            }
+            $fullpath = $this->activePluginDir . "/" . $entry;
+
+            if (!is_dir($fullpath)) {
+                continue;
+            }
+
+            $result[] = $entry;
+        }
+
+        return $result;
+    }
+
+    #########################################
+    #             Dependencies            #
+    #########################################
+
+    /**
+     * Gets all dependencies for the given plugin.
+     * Including dependencies fo dependencies
+     * Returns false on error
+     *
+     * @param $pluginName
+     *
+     * @return array|false
+     */
+    public function getDependencies($pluginName)
+    {
+        try {
+            $this->loadDependencies();
+        } catch (\Exception $Exception) {
+            return false;
+        }
+
+        $result = array();
+
+        if (!isset($this->dependencies[$pluginName])) {
+            return array();
+        }
+
+        $deps = $this->dependencies[$pluginName];
+        foreach ($deps as $dep) {
+
+            $result[] = $dep;
+
+            $subDeps = $this->getDependencies($dep);
+
+            $result = array_merge($result, $subDeps);
+        }
+
+        $result = array_unique($result);
+
+        return $result;
+    }
+
+    /**
+     * Returns an array of packages that depend on the given plugin
+     * Returns false on error
+     *
+     * @param $pluginName
+     *
+     * @return array|bool
+     */
+    public function getDependentPlugins($pluginName)
+    {
+        $result = array();
+
+        try {
+            $this->loadDependencies();
+        } catch (\Exception $Exception) {
+            return false;
+        }
+
+
+        foreach ($this->dependencies as $pkg => $deps) {
+
+            if (in_array($pluginName, $deps)) {
+                $result[] = $pkg;
+            }
+        }
+
+        $result = array_unique($result);
+
+        return $result;
+    }
+
+    /**
+     * Loads the dependencies for the installed modules
+     *
+     * @throws Exception
+     */
+    protected function loadDependencies()
+    {
+        if (isset($this->dependencies) && !empty($this->dependencies)) {
+            return;
+        }
+
+        if (!file_exists($this->getPluginDir() . "/dependencies.json")) {
+            Log::addWarning("Missing dependency file: " . $this->getPluginDir() . "/dependencies.json");
+
+            throw new Exception("missing.dependency.file");
+        }
+
+        $json = file_get_contents($this->getPluginDir() . "/dependencies.json");
+        $deps = json_decode($json, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception(json_last_error_msg());
+        }
+
+        $this->dependencies = $deps;
+
+    }
+
+    #########################################
+    #               Helper                  #
+    #########################################
+
+    /**
+     * Returns a list of all plugins and their details
+     * Format:
+     * array(
+     *  [0] => array(
+     *      ["name"] => "pluginname",
+     *      ["state"] => 0|1  (1 for active; 0 for inactive)
+     *  )
+     * )
+     *
+     * @return array
+     */
+    public function getAllPlugins()
+    {
+        $result = array();
+
+        foreach ($this->getActivePlugins() as $plugin) {
+            $result[] = array(
+                'name'  => $plugin,
+                'state' => 1
+            );
+        }
+
+        foreach ($this->getInstalledPlugins() as $plugin) {
+            $result[] = array(
+                'name'  => $plugin,
+                'state' => 0
+            );
+        }
+
+        return $result;
     }
 
     /**

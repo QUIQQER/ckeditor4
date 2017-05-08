@@ -213,8 +213,20 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             );
 
 
-            Settings.getPlugins().then(function (plugins) {
+            Settings.getPluginData().then(function (pluginData) {
+                var plugins    = pluginData.plugins;
+                var pluginPath = pluginData.pluginPath;
+
                 var extraPlugins = plugins.join(",");
+
+
+                for (var i = 0, len = plugins.length; i < len; i++) {
+                    var pluginName = plugins[i];
+                    if (!window.CKEDITOR.plugins.get(pluginName)) {
+                        window.CKEDITOR.plugins.addExternal(pluginName, pluginPath + "/bin/" + pluginName + "/", "");
+                    }
+                }
+
 
                 window.CKEDITOR.replace(instance, {
                     skinName           : 'moono-lisa',
@@ -265,8 +277,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     this.$onInstanceReadyListener
                 );
             }
-        }
-        ,
+        },
 
         /**
          * event : instance ready
@@ -290,8 +301,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             this.fireEvent('loaded', [this, instance.editor]);
 
             instance.editor.focus();
-        }
-        ,
+        },
 
         /**
          * event : on resize
@@ -302,8 +312,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 containerSize = Container.getSize();
 
             Instance.resize(containerSize.x, containerSize.y);
-        }
-        ,
+        },
 
         /**
          * Editor onSetContent Event
@@ -315,8 +324,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Editor.getInstance()) {
                 Editor.getInstance().setData(content);
             }
-        }
-        ,
+        },
 
         /**
          * Editor onGetContent Event
@@ -327,8 +335,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Editor.getInstance()) {
                 Editor.setAttribute('content', Editor.getInstance().getData());
             }
-        }
-        ,
+        },
 
         /**
          * Set the focus to the editor
@@ -337,8 +344,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (this.getInstance()) {
                 this.getInstance().focus();
             }
-        }
-        ,
+        },
 
         /**
          * Switch to source mode
@@ -347,8 +353,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (this.getInstance()) {
                 this.getInstance().setMode('source');
             }
-        }
-        ,
+        },
 
         /**
          * Switch to wysiwyg editor
@@ -357,8 +362,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (this.getInstance()) {
                 this.getInstance().setMode('wysiwyg');
             }
-        }
-        ,
+        },
 
         /**
          * Hide the toolbar
@@ -369,8 +373,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Toolbar) {
                 Toolbar.setStyle('display', 'none');
             }
-        }
-        ,
+        },
 
         /**
          * show the toolbar
@@ -381,8 +384,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             if (Toolbar) {
                 Toolbar.setStyle('display', null);
             }
-        }
-        ,
+        },
 
         /**
          * Set the height of the instance
@@ -395,8 +397,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             this.setAttribute('height', height);
-        }
-        ,
+        },
 
         /**
          * Set the height of the instance
@@ -409,8 +410,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             this.setAttribute('width', width);
-        }
-        ,
+        },
 
         /**
          * event : on add css
@@ -433,8 +433,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 Doc.head.appendChild(Link);
             }
-        }
-        ,
+        },
 
         /**
          * event : on Drop
@@ -446,8 +445,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             for (var i = 0, len = params.length; i < len; i++) {
                 Instance.insertHtml("<img src=" + params[i].url + " />");
             }
-        }
-        ,
+        },
 
         // /**
         //  * Generate the extra plugins option in dependence of the toolbar
@@ -683,8 +681,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             };
 
             return ev;
-        }
-        ,
+        },
 
         /**
          * edit the link dialog
@@ -793,7 +790,5 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
             return ev;
         }
-    })
-        ;
-})
-;
+    });
+});
