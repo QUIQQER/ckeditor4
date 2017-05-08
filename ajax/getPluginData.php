@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Retrieves data about the active plugins
+ *
+ * Returnformat:
+ * array(
+ *  'plugins' => array('plugin1','plugin2','plugin3'...),
+ *  'pluginpath' => 'path/to/plugins'
+ * )
+ *
+ * @param pluginName
+ *
+ */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_ckeditor4_ajax_getPluginData',
     function () {

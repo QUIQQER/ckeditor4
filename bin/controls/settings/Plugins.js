@@ -21,6 +21,10 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
 
             options: {},
 
+            /**
+             * Control constructor
+             * @param options
+             */
             initialize: function (options) {
                 this.parent(options);
 
@@ -38,7 +42,9 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                 });
             },
 
-
+            /**
+             * Eventhandler onCreate
+             */
             $onCreate: function () {
                 var self = this;
 
@@ -149,6 +155,9 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                 this.$Grid.resize();
             },
 
+            /**
+             * Refreshes the plugin table
+             */
             refresh: function () {
                 var self = this;
 
@@ -183,6 +192,10 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                 });
             },
 
+            /**
+             * Toggles the state of the selected plugin
+             * @returns {*}
+             */
             $toggleState: function () {
                 var self = this;
                 return new Promise(function (resolve) {
@@ -229,6 +242,11 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                 });
             },
 
+            /**
+             * Disable the plugin with the given name
+             * @param name
+             * @returns {*}
+             */
             $disablePlugin: function (name) {
 
                 return new Promise(function (resolve, reject) {
@@ -240,6 +258,11 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                 });
             },
 
+            /**
+             * Enable the plugin with the given name
+             * @param name
+             * @returns {*}
+             */
             $enablePlugin: function (name) {
                 return new Promise(function (resolve, reject) {
                     QUIAjax.post("package_quiqqer_ckeditor4_ajax_activatePlugin", resolve, {
@@ -249,7 +272,6 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
                     });
                 });
             }
-
 
         }
     );

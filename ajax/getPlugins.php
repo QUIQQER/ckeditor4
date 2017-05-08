@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Gets all plugins and their state
+ */
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_ckeditor4_ajax_getPlugins',
     function () {

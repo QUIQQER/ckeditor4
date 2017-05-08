@@ -46,6 +46,11 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             '$onInstanceReadyListener'
         ],
 
+        /**
+         * Control Constructor
+         * @param Manager
+         * @param options
+         */
         initialize: function (Manager, options) {
             this.parent(Manager, options);
 
@@ -446,108 +451,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 Instance.insertHtml("<img src=" + params[i].url + " />");
             }
         },
-
-        // /**
-        //  * Generate the extra plugins option in dependence of the toolbar
-        //  * @param toolbar
-        //  */
-        // $parseToolbarToPlugins: function (toolbar) {
-        //     var extra      = [],
-        //         buttonList = [];
-        //
-        //     if (typeOf(toolbar) == 'array') {
-        //         buttonList = toolbar.flatten();
-        //     }
-        //
-        //     for (var i = 0, len = buttonList.length; i < len; i++) {
-        //         switch (buttonList[i]) {
-        //             case 'Templates':
-        //                 extra.push('templates');
-        //                 break;
-        //
-        //             case 'Find':
-        //             case 'Replace':
-        //                 extra.push('find');
-        //                 break;
-        //
-        //             case 'SelectAll':
-        //                 extra.push('selectall');
-        //                 break;
-        //
-        //             case 'Form':
-        //             case 'Checkbox':
-        //             case 'Radio':
-        //             case 'TextField':
-        //             case 'Textarea':
-        //             case 'Select':
-        //             case 'Button':
-        //             case 'ImageButton':
-        //             case 'HiddenField':
-        //                 extra.push('forms');
-        //                 break;
-        //
-        //             case 'CreateDiv':
-        //                 extra.push('div');
-        //                 break;
-        //
-        //             case 'JustifyLeft':
-        //             case 'JustifyCenter':
-        //             case 'JustifyRight':
-        //             case 'JustifyBlock':
-        //                 extra.push('justify');
-        //                 break;
-        //
-        //             case 'BidiLtr':
-        //             case 'BidiRtl':
-        //                 extra.push('bidi');
-        //                 break;
-        //
-        //             case 'Language':
-        //                 extra.push('language');
-        //                 break;
-        //
-        //             case 'Link':
-        //             case 'Unlink':
-        //             case 'Anchor':
-        //                 extra.push('link');
-        //                 break;
-        //
-        //             case 'Flash':
-        //                 extra.push('flash');
-        //                 break;
-        //
-        //             case 'Smiley':
-        //                 extra.push('smiley');
-        //                 break;
-        //
-        //             case 'PageBreak':
-        //                 extra.push('pagebreak');
-        //                 break;
-        //
-        //             case 'Iframe':
-        //                 extra.push('iframe');
-        //                 break;
-        //
-        //             case 'Font':
-        //             case 'FontSize':
-        //                 extra.push('font');
-        //                 break;
-        //
-        //             case 'BGColor':
-        //             case 'TextColor':
-        //                 extra.push('colorbutton');
-        //                 break;
-        //         }
-        //     }
-        //
-        //     //extra.push('wordcount');
-        //
-        //     extra = extra.unique();
-        //
-        //
-        //     return extra.join(',');
-        // }
-        // ,
 
         /**
          * edit the image dialog
