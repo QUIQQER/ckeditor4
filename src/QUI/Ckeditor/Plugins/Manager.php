@@ -216,9 +216,7 @@ class Manager
             try {
                 $this->activate($dep);
             } catch (\Exception $Exception) {
-
             }
-
         }
 
         rename($this->installedPluginDir . "/" . $pluginName, $this->activePluginDir . "/" . $pluginName);
@@ -251,7 +249,6 @@ class Manager
                 $this->deactivate($depName);
             } catch (\Exception $Exception) {
             }
-
         }
 
         rename($this->activePluginDir . "/" . $pluginName, $this->installedPluginDir . "/" . $pluginName);
@@ -316,7 +313,6 @@ class Manager
 
         $deps = $this->dependencies[$pluginName];
         foreach ($deps as $dep) {
-
             $result[] = $dep;
 
             $subDeps = $this->getDependencies($dep);
@@ -349,7 +345,6 @@ class Manager
 
 
         foreach ($this->dependencies as $pkg => $deps) {
-
             if (in_array($pluginName, $deps)) {
                 $result[] = $pkg;
             }
@@ -385,7 +380,6 @@ class Manager
         }
 
         $this->dependencies = $deps;
-
     }
 
     #########################################
