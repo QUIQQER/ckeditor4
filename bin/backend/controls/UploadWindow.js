@@ -1,4 +1,4 @@
-define('package/quiqqer/ckeditor4/bin/windows/Upload', [
+define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
 
     'qui/QUI',
     'qui/controls/windows/Confirm',

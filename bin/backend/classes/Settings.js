@@ -1,4 +1,4 @@
-define('package/quiqqer/ckeditor4/bin/classes/Settings', [
+define('package/quiqqer/ckeditor4/bin/backend/classes/Settings', [
 
     'qui/QUI',
     'qui/classes/DOM',

@@ -1,4 +1,4 @@
-define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
+define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
     'qui/QUI',
     'qui/controls/Control',
     'controls/grid/Grid',
@@ -10,7 +10,7 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
     return new Class(
         {
             Extends: QUIControl,
-            Type   : 'package/quiqqer/ckeditor4/bin/controls/settings/Plugins',
+            Type   : 'package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins',
 
             Binds: [
                 '$onCreate',
@@ -287,7 +287,7 @@ define('package/quiqqer/ckeditor4/bin/controls/settings/Plugins', [
             $displayUpload: function () {
                 var self = this;
 
-                require(['package/quiqqer/ckeditor4/bin/windows/Upload'], function (Window) {
+                require(['package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow'], function (Window) {
                     new Window({}).open();
                 });
 

@@ -11,6 +11,7 @@ QUI::$Ajax->registerFunction(
             $Manager->installPlugin($filePath);
         } catch (\Exception $Exception) {
             QUI::getMessagesHandler()->addError($Exception->getMessage());
+
         }
     },
     array('File')
