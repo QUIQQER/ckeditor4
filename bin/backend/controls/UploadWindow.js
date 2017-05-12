@@ -85,6 +85,8 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
                 QUILocale.get("quiqqer/ckeditor4", "message.window.upload.complete")
             );
 
+            this.fireEvent("uploadDone");
+
             this.close();
         }
 

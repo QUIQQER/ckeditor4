@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+    <settings>
+
+        <window>
+            <title>CKEditor</title>
+            <params>
+                <icon>fa fa-file-text</icon>
+            </params>
+
+            <categories>
+                <category name="ckeditor">
+                    <text>Editor</text>
+                    <icon>fa fa-file-text</icon>
+
+                    <settings title="plugins" name="plugins">
+                        <title>Plugins</title>
+
+                        <input label="false"
+                               type="hidden"
+                               data-qui="package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins"
+                        />
+
+                    </settings>
+
+                </category>
+
+            </categories>
+        </window>
+
+    </settings>
+</quiqqer>

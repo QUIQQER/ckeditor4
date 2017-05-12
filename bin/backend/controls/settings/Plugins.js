@@ -7,192 +7,197 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
 ], function (QUI, QUIControl, Grid, QUIAjax, QUILocale) {
     "use strict";
 
-    return new Class(
-        {
-            Extends: QUIControl,
-            Type   : 'package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins',
+    return new Class({
+        Extends: QUIControl,
+        Type   : 'package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins',
 
-            Binds: [
-                '$onCreate',
-                '$onResize',
-                '$onRefresh',
-                '$toggleState'
-            ],
+        Binds: [
+            '$onCreate',
+            '$onImport',
+            '$onResize',
+            '$onRefresh',
+            '$toggleState'
+        ],
 
-            options: {},
+        options: {},
 
-            /**
-             * Control constructor
-             * @param options
-             */
-            initialize: function (options) {
-                this.parent(options);
+        /**
+         * Control constructor
+         * @param options
+         */
+        initialize: function (options) {
+            this.parent(options);
 
-                // Variablendklarationen
-                this.$Grid = null;
+            // Variablendklarationen
+            this.$Grid  = null;
+            this.$Input = null;
 
-                this.$canToggle = false;
-                this.$canUpload = false;
+            this.$canToggle = false;
+            this.$canUpload = false;
 
-                // Eventdeklarationen
-                this.addEvents({
-                    onCreate : this.$onCreate,
-                    onResize : this.$onResize,
-                    onRefresh: this.$onRefresh,
-                    onInject : this.$onCreate,
-                    onImport : this.$onCreate
-                });
-            },
+            // Eventdeklarationen
+            this.addEvents({
+                onCreate : this.$onCreate,
+                onResize : this.$onResize,
+                onRefresh: this.$onRefresh,
+                onImport : this.$onImport
+            });
+        },
 
-            /**
-             * Eventhandler onCreate
-             */
-            $onCreate: function () {
-                var self = this;
+        /**
+         * Eventhandler onCreate
+         */
+        $onCreate: function () {
+            var self = this;
 
-                var Container = new Element('div').inject(
-                    this.getElm()
-                );
+            var Container = new Element('div').inject(this.getElm());
 
 
-                this.$Grid = new Grid(Container, {
-                    buttons    : [{
-                        name    : 'state',
-                        text    : QUILocale.get(
+            this.$Grid = new Grid(Container, {
+                buttons    : [{
+                    name    : 'state',
+                    text    : QUILocale.get(
+                        "quiqqer/ckeditor4",
+                        "editors.settings.plugins.table.button.activate"
+                    ),
+                    disabled: true,
+                    events  : {
+                        onClick: this.$toggleState
+                    }
+                }, {
+                    name  : 'upload',
+                    text  : QUILocale.get(
+                        "quiqqer/ckeditor4",
+                        "editors.settings.plugins.table.button.upload"
+                    ),
+                    events: {
+                        onClick: this.$displayUpload
+                    }
+                }],
+                height     : "500",
+                columnModel: [
+                    {
+                        header   : QUILocale.get(
+                            "quiqqer/ckeditor4",
+                            "editors.settings.plugins.table.header.state"
+                        ),
+                        dataIndex: 'icon',
+                        dataType : 'node',
+                        width    : 60
+                    },
+                    {
+                        header   : QUILocale.get(
+                            "quiqqer/ckeditor4",
+                            "editors.settings.plugins.table.header.name"
+                        ),
+                        dataIndex: 'name',
+                        dataType : 'string',
+                        width    : 400
+                    }
+                ]
+            });
+
+            this.$Grid.addEvents({
+
+                onDblClick: function () {
+                    this.$toggleState();
+                }.bind(this),
+
+                onClick: function () {
+
+                    var TableButtons = self.$Grid.getAttribute('buttons');
+
+                    var StateBtn = TableButtons.state;
+
+                    var data = self.$Grid.getSelectedData()[0];
+
+                    if (!data) {
+                        return;
+                    }
+
+
+                    if (data.state === 0) {
+                        StateBtn.setAttribute("text", QUILocale.get(
                             "quiqqer/ckeditor4",
                             "editors.settings.plugins.table.button.activate"
-                        ),
-                        disabled: true,
-                        events  : {
-                            onClick: this.$toggleState
-                        }
-                    }, {
-                        name  : 'upload',
-                        text  : QUILocale.get(
+                        ));
+                    }
+
+                    if (data.state === 1) {
+                        StateBtn.setAttribute("text", QUILocale.get(
                             "quiqqer/ckeditor4",
-                            "editors.settings.plugins.table.button.upload"
-                        ),
-                        events: {
-                            onClick: this.$displayUpload
-                        }
-                    }],
-                    height     : "500",
-                    columnModel: [
-                        {
-                            header   : QUILocale.get(
-                                "quiqqer/ckeditor4",
-                                "editors.settings.plugins.table.header.state"
-                            ),
-                            dataIndex: 'icon',
-                            dataType : 'node',
-                            width    : 60
-                        },
-                        {
-                            header   : QUILocale.get(
-                                "quiqqer/ckeditor4",
-                                "editors.settings.plugins.table.header.name"
-                            ),
-                            dataIndex: 'name',
-                            dataType : 'string',
-                            width    : 400
-                        }
-                    ]
-                });
-
-                this.$Grid.addEvents({
-
-                    onDblClick: function () {
-                        this.$toggleState();
-                    }.bind(this),
-
-                    onClick: function () {
-
-                        var TableButtons = self.$Grid.getAttribute('buttons');
-
-                        var StateBtn = TableButtons.state;
-
-                        console.log(TableButtons);
-
-                        var data = self.$Grid.getSelectedData()[0];
-
-                        if (!data) {
-                            return;
-                        }
-
-
-                        if (data.state === 0) {
-                            StateBtn.setAttribute("text", QUILocale.get(
-                                "quiqqer/ckeditor4",
-                                "editors.settings.plugins.table.button.activate"
-                            ));
-                        }
-
-                        if (data.state === 1) {
-                            StateBtn.setAttribute("text", QUILocale.get(
-                                "quiqqer/ckeditor4",
-                                "editors.settings.plugins.table.button.deactivate"
-                            ));
-                        }
-
-                        if (StateBtn && self.$canToggle) {
-                            StateBtn.enable();
-                        }
+                            "editors.settings.plugins.table.button.deactivate"
+                        ));
                     }
 
-                });
-
-
-                QUIAjax.get("package_quiqqer_ckeditor4_ajax_getPermissions", function (permissions) {
-
-                    self.$canToggle = permissions.toggle;
-                    self.$canUpload = permissions.upload;
-                    console.log(permissions);
-
-                    if(!self.$canToggle){
-                        self.$Grid.getAttribute('buttons').state.disable();
+                    if (StateBtn && self.$canToggle) {
+                        StateBtn.enable();
                     }
-
-                    if(!self.$canUpload){
-                        self.$Grid.getAttribute('buttons').upload.disable();
-                    }
-                },{
-                    package: "quiqqer/ckeditor4"
-                });
-
-
-                this.refresh();
-                this.$onResize();
-            },
-
-            /**
-             * event : on refresh
-             */
-            $onRefresh: function () {
-
-            },
-
-            /**
-             * event : on resize
-             */
-            $onResize: function () {
-                if (!this.$Grid || !this.$Elm) {
-                    return;
                 }
 
-                var size = this.$Elm.getSize();
+            });
 
 
-                this.$Grid.setHeight(size.y);
-                this.$Grid.setWidth(size.x);
-                this.$Grid.resize();
-            },
+            QUIAjax.get("package_quiqqer_ckeditor4_ajax_getPermissions", function (permissions) {
 
-            /**
-             * Refreshes the plugin table
-             */
-            refresh: function () {
-                var self = this;
+                self.$canToggle = permissions.toggle;
+                self.$canUpload = permissions.upload;
 
+
+                if (!self.$canToggle) {
+                    self.$Grid.getAttribute('buttons').state.disable();
+                }
+
+                if (!self.$canUpload) {
+                    self.$Grid.getAttribute('buttons').upload.disable();
+                }
+            }, {
+                package: "quiqqer/ckeditor4"
+            });
+
+
+            this.refresh();
+            this.$onResize();
+        },
+
+        $onImport: function () {
+            this.$Input = this.getElm();
+            this.$Elm   = new Element('div', {
+                style: "width: 100%;"
+            }).wraps(this.$Input);
+
+            this.$onCreate();
+        },
+
+        /**
+         * event : on refresh
+         */
+        $onRefresh: function () {
+
+        },
+
+        /**
+         * event : on resize
+         */
+        $onResize: function () {
+            if (!this.$Grid || !this.$Elm) {
+                return;
+            }
+
+            var size = this.$Elm.getSize();
+
+            this.$Grid.setHeight(size.y);
+            this.$Grid.setWidth(size.x);
+            this.$Grid.resize();
+        },
+
+        /**
+         * Refreshes the plugin table
+         */
+        refresh: function () {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
                 QUIAjax.get("package_quiqqer_ckeditor4_ajax_getPlugins", function (result) {
 
                     for (var i = 0, len = result.length; i < len; i++) {
@@ -209,8 +214,6 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                             result[i].icon = new Element("span", {
                                 'class': 'fa fa-check fa-2x'
                             });
-
-                            continue;
                         }
                     }
 
@@ -218,99 +221,105 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                         data: result
                     });
 
-
+                    resolve();
                 }, {
-                    'package': "quiqqer/ckeditor4"
+                    'package': "quiqqer/ckeditor4",
+                    onError  : reject
                 });
-            },
+            });
+        },
 
-            /**
-             * Toggles the state of the selected plugin
-             * @returns {*}
-             */
-            $toggleState: function () {
-                var self = this;
-                return new Promise(function (resolve) {
-                    if (!self.$Grid) {
+        /**
+         * Toggles the state of the selected plugin
+         * @returns {*}
+         */
+        $toggleState: function () {
+            var self = this;
+            return new Promise(function (resolve) {
+                if (!self.$Grid) {
 
-                        return resolve();
-                    }
+                    return resolve();
+                }
 
-                    var data = self.$Grid.getSelectedData()[0];
+                var data = self.$Grid.getSelectedData()[0];
 
-                    if (!data.name || data.state === null || data.state === 'undefined') {
+                if (!data.name || data.state === null || data.state === 'undefined') {
 
-                        return;
-                    }
-
-
-                    if (data.state === 0) {
-                        self.$enablePlugin(data.name).then(function () {
-                                self.refresh();
-                                QUI.MessageHandler.addSuccess(QUILocale.get(
-                                    "quiqqer/ckeditor4",
-                                    "message.settings.plugins.activation.success"
-                                ));
-                            }
-                        ).catch(function () {
-                        });
-                    }
+                    return;
+                }
 
 
-                    if (data.state === 1) {
-                        self.$disablePlugin(data.name).then(function () {
-                                self.refresh();
-                                QUI.MessageHandler.addSuccess(QUILocale.get(
-                                    "quiqqer/ckeditor4",
-                                    "message.settings.plugins.deactivation.success"
-                                ));
-                            }
-                        ).catch(function () {
-                        });
-                    }
-
-                });
-            },
-
-            /**
-             * Disable the plugin with the given name
-             * @param name
-             * @returns {*}
-             */
-            $disablePlugin: function (name) {
-
-                return new Promise(function (resolve, reject) {
-                    QUIAjax.post("package_quiqqer_ckeditor4_ajax_deactivatePlugin", resolve, {
-                        'package'   : 'quiqqer/ckeditor4',
-                        'pluginName': name,
-                        onError     : reject
+                if (data.state === 0) {
+                    self.$enablePlugin(data.name).then(function () {
+                            self.refresh();
+                            QUI.MessageHandler.addSuccess(QUILocale.get(
+                                "quiqqer/ckeditor4",
+                                "message.settings.plugins.activation.success"
+                            ));
+                        }
+                    ).catch(function () {
                     });
-                });
-            },
+                }
 
-            /**
-             * Enable the plugin with the given name
-             * @param name
-             * @returns {*}
-             */
-            $enablePlugin: function (name) {
-                return new Promise(function (resolve, reject) {
-                    QUIAjax.post("package_quiqqer_ckeditor4_ajax_activatePlugin", resolve, {
-                        'package'   : 'quiqqer/ckeditor4',
-                        'pluginName': name,
-                        onError     : reject
+
+                if (data.state === 1) {
+                    self.$disablePlugin(data.name).then(function () {
+                            self.refresh();
+                            QUI.MessageHandler.addSuccess(QUILocale.get(
+                                "quiqqer/ckeditor4",
+                                "message.settings.plugins.deactivation.success"
+                            ));
+                        }
+                    ).catch(function () {
                     });
+                }
+
+            });
+        },
+
+        /**
+         * Disable the plugin with the given name
+         * @param name
+         * @returns {*}
+         */
+        $disablePlugin: function (name) {
+
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post("package_quiqqer_ckeditor4_ajax_deactivatePlugin", resolve, {
+                    'package'   : 'quiqqer/ckeditor4',
+                    'pluginName': name,
+                    onError     : reject
                 });
-            },
+            });
+        },
 
-            $displayUpload: function () {
-                var self = this;
-
-                require(['package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow'], function (Window) {
-                    new Window({}).open();
+        /**
+         * Enable the plugin with the given name
+         * @param name
+         * @returns {*}
+         */
+        $enablePlugin: function (name) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post("package_quiqqer_ckeditor4_ajax_activatePlugin", resolve, {
+                    'package'   : 'quiqqer/ckeditor4',
+                    'pluginName': name,
+                    onError     : reject
                 });
+            });
+        },
 
-            }
+        $displayUpload: function () {
+
+            var self = this;
+
+            require(['package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow'], function (Window) {
+                new Window({
+                    events: {
+                        onUploadDone: self.refresh
+                    }
+                }).open();
+            });
+
         }
-    );
+    });
 });
