@@ -21,17 +21,17 @@ QUI::$Ajax->registerFunction(
 
         $User = QUI::getUserBySession();
         if ($User->isSU()) {
-           $result['toggle'] = true;
-           $result['upload'] = true;
-           return $result;
+            $result['toggle'] = true;
+            $result['upload'] = true;
+            return $result;
         }
 
 
-        if($User->getPermission("quiqqer.editors.ckeditor.plugins.toggle")){
+        if ($User->getPermission("quiqqer.editors.ckeditor.plugins.toggle")) {
             $result['toggle'] = true;
         }
 
-        if($User->getPermission("quiqqer.editors.ckeditor.plugins.upload")){
+        if ($User->getPermission("quiqqer.editors.ckeditor.plugins.upload")) {
             $result['upload'] = true;
         }
 

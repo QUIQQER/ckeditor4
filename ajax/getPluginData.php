@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
     'package_quiqqer_ckeditor4_ajax_getPluginData',
     function () {
 
-        if(QUI::getUserBySession()->getId() === 0){
+        if (QUI::getUserBySession()->getId() === 0) {
             throw new \QUI\Exception("Invalid external function call. Caller must be logged in!");
         }
 
