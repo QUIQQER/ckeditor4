@@ -100,7 +100,8 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
             this.$Grid.addEvents({
 
                 onDblClick: function () {
-                    this.$toggleState();
+                    this.$openStorePage();
+                    // this.$toggleState();
                 }.bind(this),
 
                 onClick: function () {
@@ -160,6 +161,9 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
             this.$onResize();
         },
 
+        /**
+         * event: onImport
+         */
         $onImport: function () {
             this.$Input = this.getElm();
             this.$Elm   = new Element('div', {
@@ -167,13 +171,6 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
             }).wraps(this.$Input);
 
             this.$onCreate();
-        },
-
-        /**
-         * event : on refresh
-         */
-        $onRefresh: function () {
-
         },
 
         /**
@@ -278,6 +275,42 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
         },
 
         /**
+         * Opens the store page of the currently selected plugin
+         */
+        $openStorePage: function () {
+
+            var url = "http://ckeditor.com/addon/";
+
+            url = url + this.$getSelectedName();
+
+            window.open(url, '_blank');
+        },
+
+        /**
+         * Returns the currently selected name
+         *
+         * @returns {boolean}
+         */
+        $getSelectedName: function () {
+            var self = this;
+
+            if (!self.$Grid) {
+
+                return false;
+            }
+
+            var data = self.$Grid.getSelectedData()[0];
+
+            if (!data.name || data.state === null || data.state === 'undefined') {
+
+                return false;
+            }
+
+            return data.name;
+
+        },
+
+        /**
          * Disable the plugin with the given name
          * @param name
          * @returns {*}
@@ -308,6 +341,9 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
             });
         },
 
+        /**
+         * Displays the Upload window
+         */
         $displayUpload: function () {
 
             var self = this;
