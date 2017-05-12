@@ -192,7 +192,7 @@ class Manager
     /**
      * Installs a plugin zip file from the given path
      *
-     * @param $pluginpath
+     * @param $pluginpath - path to the plugins zip file
      *
      * @throws Exception
      */
