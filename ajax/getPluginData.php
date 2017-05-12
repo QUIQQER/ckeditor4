@@ -21,11 +21,18 @@ QUI::$Ajax->registerFunction(
             throw new \QUI\Exception("Invalid external function call. Caller must be logged in!");
         }
 
+
+        try {
+            return \QUI\Cache\Manager::get("quiqqer/ckeditor/plugins/data");
+        } catch (\Exception $Exception) {
+        }
+
+
         $Manager = new \QUI\Ckeditor\Plugins\Manager();
 
         // Build the web reachable path for the plugin directory
         $pluginPath = QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "plugins";
-        $varParent = dirname(VAR_DIR);
+        $varParent  = dirname(VAR_DIR);
 
         # Parse the URL directory
         $pluginUrlPath = str_replace($varParent, "", $pluginPath);
@@ -35,6 +42,10 @@ QUI::$Ajax->registerFunction(
             'plugins'    => $Manager->getActivePlugins(),
             'pluginPath' => $pluginUrlPath
         );
+
+
+        \QUI\Cache\Manager::set("quiqqer/ckeditor/plugins/data", $data);
+
 
         return $data;
     },

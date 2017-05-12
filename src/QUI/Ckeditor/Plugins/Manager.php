@@ -283,6 +283,9 @@ class Manager
         }
 
         rename($this->installedPluginDir . "/" . $pluginName, $this->activePluginDir . "/" . $pluginName);
+
+
+        \QUI\Cache\Manager::clear("quiqqer/ckeditor/plugins/data");
     }
 
     /**
@@ -315,6 +318,8 @@ class Manager
         }
 
         rename($this->activePluginDir . "/" . $pluginName, $this->installedPluginDir . "/" . $pluginName);
+
+        \QUI\Cache\Manager::clear("quiqqer/ckeditor/plugins/data");
     }
 
     /**
