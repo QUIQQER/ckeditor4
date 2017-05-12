@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions>
+    <permission name="quiqqer.editors.ckeditor.plugins.toggle" type="bool" />
+    <permission name="quiqqer.editors.ckeditor.plugins.upload" type="bool" />
+</permissions>

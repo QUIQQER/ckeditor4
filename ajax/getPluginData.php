@@ -16,6 +16,11 @@
 QUI::$Ajax->registerFunction(
     'package_quiqqer_ckeditor4_ajax_getPluginData',
     function () {
+
+        if(QUI::getUserBySession()->getId() === 0){
+            throw new \QUI\Exception("Invalid external function call. Caller must be logged in!");
+        }
+
         $Manager = new \QUI\Ckeditor\Plugins\Manager();
 
         // Build the web reachable path for the plugin directory

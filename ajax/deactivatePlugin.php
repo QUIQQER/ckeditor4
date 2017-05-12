@@ -14,5 +14,6 @@ QUI::$Ajax->registerFunction(
 
         $PluginManager->deactivate($pluginName);
     },
-    array('pluginName')
+    array('pluginName'),
+    "quiqqer.editors.ckeditor.plugins.toggle"
 );

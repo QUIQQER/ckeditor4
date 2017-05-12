@@ -13,5 +13,6 @@ QUI::$Ajax->registerFunction(
             QUI::getMessagesHandler()->addError($Exception->getMessage());
         }
     },
-    array('File')
+    array('File'),
+    "quiqqer.editors.ckeditor.plugins.upload"
 );

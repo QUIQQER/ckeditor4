@@ -85,5 +85,25 @@
             <de><![CDATA[Plugin erfolgreich deaktiviert]]></de>
             <en><![CDATA[Plugin disabled successfully]]></en>
         </locale>
+
+        <!-- Permissions -->
+        <locale name="permission.quiqqer.editors.ckeditor._header">
+            <de><![CDATA[CKEditor]]></de>
+            <en><![CDATA[CKEditor]]></en>
+        </locale>
+
+        <locale name="permission.quiqqer.editors.ckeditor.plugins._header">
+            <de><![CDATA[Plugins]]></de>
+            <en><![CDATA[Plugins]]></en>
+        </locale>
+
+        <locale name="permission.quiqqer.editors.ckeditor.plugins.upload">
+            <de><![CDATA[Plugin hochladen]]></de>
+            <en><![CDATA[Upload plugin]]></en>
+        </locale>
+        <locale name="permission.quiqqer.editors.ckeditor.plugins.toggle">
+            <de><![CDATA[Plugin aktivieren/deaktivieren]]></de>
+            <en><![CDATA[De-/activate plugin]]></en>
+        </locale>
     </groups>
 </locales>

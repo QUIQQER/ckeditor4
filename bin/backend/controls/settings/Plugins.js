@@ -31,6 +31,8 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                 // Variablendklarationen
                 this.$Grid = null;
 
+                this.$canToggle = false;
+                this.$canUpload = false;
 
                 // Eventdeklarationen
                 this.addEvents({
@@ -96,6 +98,7 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                         }
                     ]
                 });
+
                 this.$Grid.addEvents({
 
                     onDblClick: function () {
@@ -131,11 +134,29 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                             ));
                         }
 
-                        if (StateBtn) {
+                        if (StateBtn && self.$canToggle) {
                             StateBtn.enable();
                         }
                     }
 
+                });
+
+
+                QUIAjax.get("package_quiqqer_ckeditor4_ajax_getPermissions", function (permissions) {
+
+                    self.$canToggle = permissions.toggle;
+                    self.$canUpload = permissions.upload;
+                    console.log(permissions);
+
+                    if(!self.$canToggle){
+                        self.$Grid.getAttribute('buttons').state.disable();
+                    }
+
+                    if(!self.$canUpload){
+                        self.$Grid.getAttribute('buttons').upload.disable();
+                    }
+                },{
+                    package: "quiqqer/ckeditor4"
                 });
 
 
@@ -232,7 +253,6 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                                 ));
                             }
                         ).catch(function () {
-                            QUI.MessageHandler.addSuccess("Failed");
                         });
                     }
 
@@ -246,7 +266,6 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                                 ));
                             }
                         ).catch(function () {
-                            QUI.MessageHandler.addSuccess("Failed");
                         });
                     }
 
