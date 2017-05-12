@@ -26,12 +26,14 @@ QUI::$Ajax->registerFunction(
         // Build the web reachable path for the plugin directory
         $pluginPath = QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "plugins";
         $varParent = dirname(VAR_DIR);
-        $pluginPath = str_replace($varParent, "", $pluginPath);
+
+        # Parse the URL directory
+        $pluginUrlPath = str_replace($varParent, "", $pluginPath);
 
 
         $data = array(
             'plugins'    => $Manager->getActivePlugins(),
-            'pluginPath' => $pluginPath
+            'pluginPath' => $pluginUrlPath
         );
 
         return $data;
