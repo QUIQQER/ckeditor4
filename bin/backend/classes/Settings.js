@@ -12,21 +12,21 @@ define('package/quiqqer/ckeditor4/bin/backend/classes/Settings', [
         Extends: QUIDOM,
 
         initialize: function () {
-            this.pluginData = null;
+            this.config = null;
         },
 
 
-        getPluginData: function () {
+        getConfig: function(){
             var self = this;
 
-            if (this.pluginData !== null) {
-                return Promise.resolve(this.pluginData);
+            if (this.config !== null) {
+                return Promise.resolve(this.config);
             }
 
             return new Promise(function (resolve, reject) {
-                QUIAjax.get("package_quiqqer_ckeditor4_ajax_getPluginData", function (result) {
+                QUIAjax.get("package_quiqqer_ckeditor4_ajax_getEditorConfig", function (result) {
 
-                    self.pluginData = result;
+                    self.config = result;
                     resolve(result);
                 }, {
                     'package': 'quiqqer/ckeditor4',

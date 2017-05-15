@@ -81,6 +81,18 @@
             <de><![CDATA[Hochladen]]></de>
             <en><![CDATA[Upload]]></en>
         </locale>
+        <locale name="editors.settings.general.native.spellcheck.title">
+            <de><![CDATA[Native Rechtschreibprüfung deaktivieren?]]></de>
+            <en><![CDATA[Disable native spellchecker?]]></en>
+        </locale>
+        <locale name="editors.settings.general.native.spellcheck.desc">
+            <de><![CDATA[Deaktiviert die native Rechtscheibprüfung des Browsers]]></de>
+            <en><![CDATA[Disables the native spell checker of the browser]]></en>
+        </locale>
+        <locale name="editors.settings.general.native.general.header">
+            <de><![CDATA[Allgemein]]></de>
+            <en><![CDATA[General settings]]></en>
+        </locale>
         <locale name="message.settings.plugins.activation.success">
             <de><![CDATA[Plugin erfolgreich aktiviert]]></de>
             <en><![CDATA[Plugin enabled successfully]]></en>

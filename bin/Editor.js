@@ -218,9 +218,11 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             );
 
 
-            Settings.getPluginData().then(function (pluginData) {
-                var plugins    = pluginData.plugins;
-                var pluginPath = pluginData.pluginPath;
+            Settings.getConfig().then(function (config) {
+                var plugins    = config.plugins;
+                var pluginPath = config.pluginPath;
+
+                console.log(config);
 
                 var extraPlugins = plugins.join(",");
 
@@ -234,23 +236,26 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
 
                 window.CKEDITOR.replace(instance, {
-                    skinName           : 'moono-lisa',
-                    customConfig       : '',
-                    language           : Locale.getCurrent(),
-                    baseHref           : URL_DIR,
-                    basePath           : URL_DIR,
-                    height             : height,
-                    width              : width,
-                    toolbar            : toolbar,
-                    allowedContent     : true,
-                    extraAllowedContent: 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
-                    stylesSet          : styles,
-                    contentsCss        : data.cssFiles || [],
-                    bodyClass          : data.bodyClass,
+                    skinName                 : 'moono-lisa',
+                    customConfig             : '',
+                    language                 : Locale.getCurrent(),
+                    baseHref                 : URL_DIR,
+                    basePath                 : URL_DIR,
+                    height                   : height,
+                    width                    : width,
+                    toolbar                  : toolbar,
+                    allowedContent           : true,
+                    extraAllowedContent      : 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
+                    stylesSet                : styles,
+                    contentsCss              : data.cssFiles || [],
+                    bodyClass                : data.bodyClass,
                     // templates_files : [URL_OPT_DIR +'base/bin/pcsgEditorPlugins/templates.php'],
-                    baseFloatZIndex    : zIndex,
-                    extraPlugins       : extraPlugins
+                    baseFloatZIndex          : zIndex,
+                    extraPlugins             : extraPlugins,
+                    //removePlugins            : 'scayt',
+                    disableNativeSpellChecker: false
                 });
+
             });
 
         },

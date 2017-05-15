@@ -2,6 +2,16 @@
 <quiqqer>
     <settings>
 
+        <config>
+            <section name="general">
+                <conf name="disablenativeSpellcheck">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+            </section>
+        </config>
+
+
         <window>
             <title>CKEditor</title>
             <params>
@@ -12,6 +22,24 @@
                 <category name="ckeditor">
                     <text>Editor</text>
                     <icon>fa fa-file-text</icon>
+
+
+                    <settings title="plugins" name="plugins">
+                        <title>
+                            <locale group="quiqqer/ckeditor4" var="editors.settings.general.native.general.header"/>
+                        </title>
+
+                        <input type="checkbox" conf="general.disablenativeSpellcheck">
+                            <text>
+                                <locale group="quiqqer/ckeditor4"
+                                        var="editors.settings.general.native.spellcheck.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/ckeditor4"
+                                        var="editors.settings.general.native.spellcheck.desc"/>
+                            </description>
+                        </input>
+                    </settings>
 
                     <settings title="plugins" name="plugins">
                         <title>Plugins</title>

@@ -141,7 +141,7 @@ class Manager
                     continue;
                 }
 
-                if (is_dir($targetDir . "/" . $entry)) {
+                if (is_dir($this->installedPluginDir . "/" . $entry)) {
                     continue;
                 }
 
@@ -166,6 +166,8 @@ class Manager
                 $this->getPluginDir() . "/dependencies.json"
             );
         }
+
+        #File::deleteDir(OPT_DIR . "ckeditor/ckeditor/plugins");
     }
 
     /**
@@ -536,5 +538,17 @@ class Manager
 
             copy($fullpath, $target . "/" . $entry);
         }
+    }
+
+    public function getPluginUrlPath()
+    {
+        // Build the web reachable path for the plugin directory
+        $pluginPath = \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "plugins";
+        $varParent  = dirname(VAR_DIR);
+
+        # Parse the URL directory
+        $pluginUrlPath = str_replace($varParent, "", $pluginPath);
+
+        return $pluginUrlPath;
     }
 }
