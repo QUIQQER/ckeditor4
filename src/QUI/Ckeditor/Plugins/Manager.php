@@ -123,7 +123,6 @@ class Manager
 
 
         foreach ($srcDirs as $srcDir) {
-
             if (!is_dir($srcDir)) {
                 return;
             }
