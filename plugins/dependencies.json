@@ -85,5 +85,52 @@
   ],
   "colordialog": [
     "dialog"
+  ],
+  "autocorrect": [
+    "menubutton"
+  ],
+  "enhancecolorbutton": [
+    "panelbutton",
+    "floatpanel"
+  ],
+  "floating-tools": [
+    "toolbar"
+  ],
+  "symbol": [
+    "dialog"
+  ],
+  "loremipsum": [
+    "richcombo"
+  ],
+  "wordcount": [
+    "htmlwriter",
+    "notification",
+    "undo"
+  ],
+  "zoom": [
+    "richcombo"
+  ],
+  "ckawesome": [
+    "colordialog"
+  ],
+  "html5audio": [
+    "widget"
+  ],
+  "prism": [
+    "codesnippet"
+  ],
+  "pre": [
+    "widget",
+    "dialog"
+  ],
+  "cssanim": [
+    "contextmenu"
+  ],
+  "crossreference": [
+    "dialog",
+    "notification"
+  ],
+  "lineheight": [
+    "richcombo"
   ]
 }

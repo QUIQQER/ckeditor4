@@ -16,7 +16,10 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
             '$onImport',
             '$onResize',
             '$onRefresh',
-            '$toggleState'
+            '$toggleState',
+            '$onTblClick',
+            '$onTblDblClick',
+            '$openStorePage'
         ],
 
         options: {},
@@ -54,7 +57,7 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
 
 
             this.$Grid = new Grid(Container, {
-                buttons    : [{
+                buttons: [{
                     name    : 'state',
                     text    : QUILocale.get(
                         "quiqqer/ckeditor4",
@@ -74,6 +77,7 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                         onClick: this.$displayUpload
                     }
                 }],
+
                 height     : "500",
                 columnModel: [
                     {
@@ -93,49 +97,22 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                         dataIndex: 'name',
                         dataType : 'string',
                         width    : 400
+                    },
+                    {
+                        header   : QUILocale.get(
+                            "quiqqer/ckeditor4",
+                            "editors.settings.plugins.table.header.url"
+                        ),
+                        dataIndex: 'url',
+                        dataType : 'string',
+                        width    : 400
                     }
                 ]
             });
 
             this.$Grid.addEvents({
-
-                onDblClick: function () {
-                    this.$openStorePage();
-                    // this.$toggleState();
-                }.bind(this),
-
-                onClick: function () {
-
-                    var TableButtons = self.$Grid.getAttribute('buttons');
-
-                    var StateBtn = TableButtons.state;
-
-                    var data = self.$Grid.getSelectedData()[0];
-
-                    if (!data) {
-                        return;
-                    }
-
-
-                    if (data.state === 0) {
-                        StateBtn.setAttribute("text", QUILocale.get(
-                            "quiqqer/ckeditor4",
-                            "editors.settings.plugins.table.button.activate"
-                        ));
-                    }
-
-                    if (data.state === 1) {
-                        StateBtn.setAttribute("text", QUILocale.get(
-                            "quiqqer/ckeditor4",
-                            "editors.settings.plugins.table.button.deactivate"
-                        ));
-                    }
-
-                    if (StateBtn && self.$canToggle) {
-                        StateBtn.enable();
-                    }
-                }
-
+                onDblClick: self.$onTblDblClick,
+                onClick   : self.$onTblClick
             });
 
 
@@ -198,6 +175,8 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                 QUIAjax.get("package_quiqqer_ckeditor4_ajax_getPlugins", function (result) {
 
                     for (var i = 0, len = result.length; i < len; i++) {
+
+                        result[i].url = '<a target="_blank" href="' + self.$getStorePageUrl(result[i].name) + '">' + self.$getStorePageUrl(result[i].name) + '</a>';
 
                         if (result[i].state === 0) {
                             result[i].icon = new Element("span", {
@@ -287,6 +266,17 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
         },
 
         /**
+         * Gets the store page url of the given plugin
+         */
+        $getStorePageUrl: function (pluginName) {
+
+            var url = "http://ckeditor.com/addon/";
+
+            url = url + pluginName;
+            return url;
+        },
+
+        /**
          * Returns the currently selected name
          *
          * @returns {boolean}
@@ -356,6 +346,48 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins', [
                 }).open();
             });
 
+        },
+
+        /**
+         * event: onClick table row
+         */
+        $onTblClick: function () {
+            var self = this;
+
+            var TableButtons = self.$Grid.getAttribute('buttons');
+            var StateBtn     = TableButtons.state;
+            var data         = self.$Grid.getSelectedData()[0];
+
+            if (!data) {
+                return;
+            }
+
+            if (data.state === 0) {
+                StateBtn.setAttribute("text", QUILocale.get(
+                    "quiqqer/ckeditor4",
+                    "editors.settings.plugins.table.button.activate"
+                ));
+            }
+
+            if (data.state === 1) {
+                StateBtn.setAttribute("text", QUILocale.get(
+                    "quiqqer/ckeditor4",
+                    "editors.settings.plugins.table.button.deactivate"
+                ));
+            }
+
+            if (StateBtn && self.$canToggle) {
+                StateBtn.enable();
+            }
+
+        },
+
+        /**
+         * event: onCoubleClick table row
+         */
+        $onTblDblClick: function () {
+            //this.$openStorePage();
+            this.$toggleState();
         }
     });
 });

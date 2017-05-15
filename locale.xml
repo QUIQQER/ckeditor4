@@ -65,6 +65,10 @@
             <de><![CDATA[Name]]></de>
             <en><![CDATA[Name]]></en>
         </locale>
+        <locale name="editors.settings.plugins.table.header.url">
+            <de><![CDATA[Storeseite]]></de>
+            <en><![CDATA[Storepage]]></en>
+        </locale>
         <locale name="editors.settings.plugins.table.button.activate">
             <de><![CDATA[Aktivieren]]></de>
             <en><![CDATA[Activate]]></en>
@@ -84,6 +88,14 @@
         <locale name="message.settings.plugins.deactivation.success">
             <de><![CDATA[Plugin erfolgreich deaktiviert]]></de>
             <en><![CDATA[Plugin disabled successfully]]></en>
+        </locale>
+        <locale name="message.settings.upload.warning.external">
+            <de>
+                <![CDATA[Achtung: Sie sind dabei Software von externen Quellen zu installieren. Dies kann Ihr System beschädigen.]]>
+            </de>
+            <en>
+                <![CDATA[Attention: You are installing software by third party authors. These can damage your system.]]>
+            </en>
         </locale>
 
         <!-- Permissions -->

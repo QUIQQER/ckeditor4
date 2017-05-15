@@ -64,7 +64,7 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
                     onComplete: self.$onComplete
                 },
                 styles      : {
-                    height: '95%'
+                    height: '80%'
                 }
             });
 
@@ -72,6 +72,14 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
             this.$Upload.setParam('extract', 0);
 
             this.$Upload.inject(Content);
+
+            var description = new Element("div", {
+                "html" : QUILocale.get("quiqqer/ckeditor4", "message.settings.upload.warning.external"),
+                "class": "content-message-attention",
+                "style": "margin-top: 10px;"
+            });
+            description.inject(Content);
+
         },
 
 
