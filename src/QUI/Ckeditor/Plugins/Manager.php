@@ -114,14 +114,26 @@ class Manager
 
         );
 
+        $activePlugins    = array();
+        $defaultStateFile = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/plugins/activePlugins.json";
+        if (file_exists($defaultStateFile)) {
+            $json          = file_get_contents($defaultStateFile);
+            $activePlugins = json_decode($json, true);
+        }
+
+
         foreach ($srcDirs as $srcDir) {
-            $targetDir = $this->installedPluginDir;
 
             if (!is_dir($srcDir)) {
                 return;
             }
 
             foreach (scandir($srcDir) as $entry) {
+                $targetDir = $this->installedPluginDir;
+                if (in_array($entry, $activePlugins)) {
+                    $targetDir = $this->activePluginDir;
+                }
+
                 if ($entry == "." || $entry == "..") {
                     continue;
                 }
