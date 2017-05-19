@@ -98,6 +98,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                     Editor.$imageDialog(ev);
                     Editor.$linkDialog(ev);
+                    Editor.$html5AudioDialog(ev);
+                    Editor.$html5VideoDialog(ev);
                 });
 
                 self.$loadInstance(data);
@@ -219,13 +221,20 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
 
             Settings.getConfig().then(function (config) {
-                var plugins    = config.plugins;
-                var pluginPath = config.pluginPath;
+                var plugins = config.plugins;
 
                 console.log(config);
+                console.log(plugins);
+
+
+                plugins = self.$parseToolbarToPlugins(toolbar).concat(plugins);
+                plugins = plugins.unique();
+
+                var pluginPath = config.pluginPath;
 
                 var extraPlugins = plugins.join(",");
 
+                console.log(extraPlugins);
 
                 for (var i = 0, len = plugins.length; i < len; i++) {
                     var pluginName = plugins[i];
@@ -243,7 +252,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     basePath                 : URL_DIR,
                     height                   : height,
                     width                    : width,
-                    toolbar                  : toolbar,
+                    //toolbar                  : toolbar,
                     allowedContent           : true,
                     extraAllowedContent      : 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
                     stylesSet                : styles,
@@ -253,8 +262,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     baseFloatZIndex          : zIndex,
                     extraPlugins             : extraPlugins,
                     //removePlugins            : 'scayt',
-                    disableNativeSpellChecker: false
+                    disableNativeSpellChecker: config.disableNativeSpellChecker
                 });
+
 
             });
 
@@ -458,23 +468,127 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
         },
 
         /**
+         * Generate the extra plugins option in dependence of the toolbar
+         * @param toolbar
+         *
+         * @return Array
+         */
+        $parseToolbarToPlugins: function (toolbar) {
+            var extra      = [],
+                buttonList = [];
+
+            if (typeOf(toolbar) == 'array') {
+                buttonList = toolbar.flatten();
+            }
+
+            for (var i = 0, len = buttonList.length; i < len; i++) {
+                switch (buttonList[i]) {
+                    case 'Templates':
+                        extra.push('templates');
+                        break;
+
+                    case 'Find':
+                    case 'Replace':
+                        extra.push('find');
+                        break;
+
+                    case 'SelectAll':
+                        extra.push('selectall');
+                        break;
+
+                    case 'Form':
+                    case 'Checkbox':
+                    case 'Radio':
+                    case 'TextField':
+                    case 'Textarea':
+                    case 'Select':
+                    case 'Button':
+                    case 'ImageButton':
+                    case 'HiddenField':
+                        extra.push('forms');
+                        break;
+
+                    case 'CreateDiv':
+                        extra.push('div');
+                        break;
+
+                    case 'JustifyLeft':
+                    case 'JustifyCenter':
+                    case 'JustifyRight':
+                    case 'JustifyBlock':
+                        extra.push('justify');
+                        break;
+
+                    case 'BidiLtr':
+                    case 'BidiRtl':
+                        extra.push('bidi');
+                        break;
+
+                    case 'Language':
+                        extra.push('language');
+                        break;
+
+                    case 'Link':
+                    case 'Unlink':
+                    case 'Anchor':
+                        extra.push('link');
+                        break;
+
+                    case 'Flash':
+                        extra.push('flash');
+                        break;
+
+                    case 'Smiley':
+                        extra.push('smiley');
+                        break;
+
+                    case 'PageBreak':
+                        extra.push('pagebreak');
+                        break;
+
+                    case 'Iframe':
+                        extra.push('iframe');
+                        break;
+
+                    case 'Font':
+                    case 'FontSize':
+                        extra.push('font');
+                        break;
+
+                    case 'BGColor':
+                    case 'TextColor':
+                        extra.push('colorbutton');
+                        break;
+                }
+            }
+
+            return extra;
+        },
+
+
+        /**
          * edit the image dialog
          *
          * @param {DOMEvent} ev - CKEvent
          * @return {DOMEvent} ev (CKEvent)
          */
         $imageDialog: function (ev) {
+
             // Take the dialog name and its definition from the event data.
             var self             = this,
                 dialogName       = ev.data.name,
                 dialogDefinition = ev.data.definition;
 
+
+            console.log(dialogName);
             /**
              * Image dialog
              */
             if (dialogName != 'image') {
                 return ev;
             }
+
+            console.log(this);
 
             var oldOnShow = dialogDefinition.onShow;
 
@@ -580,6 +694,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     }
                 }).inject(LinkGroup);
 
+
                 var Prev = Button.getPrevious();
 
                 Prev.setStyles({
@@ -635,6 +750,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
             var self      = this,
                 oldOnShow = dialogDefinition.onShow;
+
+            console.log(self);
 
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function () {
@@ -697,6 +814,130 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             };
 
             return ev;
+        },
+
+        /**
+         * Extends the Html5Audio Dialog
+         *
+         * @param {DOMEvent} ev - CKEvent
+         * @return {DOMEvent} ev - CKEvent
+         */
+        $html5AudioDialog: function (ev) {
+
+            var dialogname       = ev.data.name,
+                dialogDefinition = ev.data.definition,
+                Button           = null;
+
+            if (dialogname !== "html5audio") {
+                return ev;
+            }
+
+            var self = this;
+
+            var oldOnShow = dialogDefinition.onShow || function () {
+                };
+
+            dialogDefinition.onShow = function () {
+                oldOnShow.bind(this)();
+
+                var UrlGroup = this.getContentElement("info", "url").getElement().$;
+
+                if (UrlGroup.getElement('.qui-button')) {
+                    return;
+                }
+
+                var UrlInput = UrlGroup.getElement('input[type="text"]');
+
+
+                Button = new Element('button', {
+                    'class': 'qui-button',
+                    html   : '<span class="fa fa-picture-o"></span>',
+                    events : {
+                        click: function () {
+                            self.openMedia({
+                                events: {
+                                    onSubmit: function (Win, data) {
+                                        UrlInput.value = data.url;
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    style  : {
+                        float: "left"
+                    }
+                }).inject(UrlGroup);
+
+
+                var Label = UrlGroup.getElement("label");
+                console.log(Label);
+                Label.setStyles({
+                    width  : "100%",
+                    display: "block"
+                });
+
+                Button.getPrevious().setStyles({
+                    'width': '85%',
+                    float  : "left"
+                });
+            };
+
+            return ev;
+        },
+
+
+        $html5VideoDialog: function (ev) {
+            var dialogname       = ev.data.name,
+                dialogDefinition = ev.data.definition,
+                Button           = null;
+
+
+            if (dialogname !== "html5video") {
+                return ev;
+            }
+
+            var self = this;
+
+            var oldOnShow = dialogDefinition.onShow || function () {
+                };
+
+            dialogDefinition.onShow = function () {
+                oldOnShow.bind(this)();
+
+                var UrlGroup = this.getContentElement("info", "url").getElement().$;
+
+                if (UrlGroup.getElement('.qui-button')) {
+                    return;
+                }
+
+                var UrlInput = UrlGroup.getElement('input[type="text"]');
+
+
+                Button = new Element('button', {
+                    'class': 'qui-button',
+                    html   : '<span class="fa fa-picture-o"></span>',
+                    events : {
+                        click: function () {
+                            self.openMedia({
+                                events: {
+                                    onSubmit: function (Win, data) {
+                                        UrlInput.value = data.url;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }).inject(UrlGroup);
+
+
+                Button.getPrevious().setStyles({
+                    'width': '85%',
+                    'float': 'left'
+                });
+            };
+
+            return ev;
         }
+
     });
 });
