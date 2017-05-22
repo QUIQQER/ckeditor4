@@ -226,7 +226,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 plugins = self.$parseToolbarToPlugins(toolbar).concat(plugins);
                 plugins = plugins.unique();
 
-                var pluginPath = config.pluginPath;
+                var pluginPath   = config.pluginPath;
                 var extraPlugins = plugins.join(",");
 
 
@@ -553,6 +553,79 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     case 'TextColor':
                         extra.push('colorbutton');
                         break;
+                    case 'Code':
+                        extra.push('codetag');
+                        break;
+                    case 'Image':
+                        extra.push('image2');
+                        break;
+                    case 'Zoom':
+                        extra.push('zoom');
+                        break;
+                    case 'Youtube':
+                        extra.push('youtube');
+                        break;
+                    case 'Videodetector':
+                        extra.push('videodetector');
+                        break;
+                    case 'Tweetabletext':
+                        extra.push('tweetabletext');
+                        break;
+                    case 'Createtoken':
+                        extra.push('token');
+                        break;
+                    case 'TransformTextSwitcher':
+                    case 'TransformTextToLowercase':
+                    case 'TransformTextToUppercase':
+                    case 'TransformTextCapitalize':
+                        extra.push('texttransform');
+                        break;
+                    case 't2s_button':
+                        extra.push('text2speech');
+                        break;
+                    case 'Symbol':
+                        extra.push('symbol');
+                        break;
+                    case 'pre':
+                        extra.push('pre');
+                        break;
+                    case 'pbckeditor':
+                        extra.push('pbckeditor');
+                        break;
+                    case 'page2images':
+                        extra.push('page2images');
+                        break;
+                    case 'Markdown':
+                        extra.push('markdown');
+                        break;
+                    case 'Loremipsum':
+                        extra.push('loremipsum');
+                        break;
+                    case 'inserthtml4x':
+                        extra.push('inserthtml4x');
+                        break;
+                    case 'Html5Video':
+                        extra.push('html5video');
+                        break;
+                    case 'Html5Audio':
+                        extra.push('html5audio');
+                        break;
+                    case 'EqnEditor':
+                        extra.push('eqneditor');
+                        break;
+                    case 'cssanim':
+                        extra.push('cssanim');
+                        break;
+                    case 'WebSpeechEnabled':
+                    case 'WebSpeechSettings':
+                        extra.push('ckwebspeech');
+                        break;
+                    case 'base64image':
+                        extra.push('base64image');
+                        break;
+                    case 'AutoCorrect':
+                        extra.push('autocorrect');
+                        break;
                 }
             }
 
@@ -742,7 +815,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
             var self      = this,
                 oldOnShow = dialogDefinition.onShow;
-
 
 
             // Get a reference to the "Link Info" tab.
