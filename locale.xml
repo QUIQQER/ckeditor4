@@ -22,6 +22,14 @@
             <de><![CDATA[Das angegebene Plugin ist bereits deaktiviert]]></de>
             <en><![CDATA[The given plugin is not active]]></en>
         </locale>
+        <locale name="exception.plugin.activate.blacklisted">
+            <de><![CDATA[Das gewählte Plugin ist nicht kompatibel.]]></de>
+            <en><![CDATA[The chosen plugin is not compatible.]]></en>
+        </locale>
+        <locale name="exception.plugin.install.wrong.format">
+            <de><![CDATA[Der Inhalt des Zip-Archivs hat eine inkompatible Struktur]]></de>
+            <en><![CDATA[The content of the zip archive has the wrong structure]]></en>
+        </locale>
 
         <!--Upload-->
         <locale name="window.upload.title">

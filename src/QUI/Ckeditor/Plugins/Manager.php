@@ -22,14 +22,19 @@ class Manager
 
     protected $dependencies;
 
+
     /**
-     * List of plugins which should be installed
+     * List of plugins which should not be installed
      *
      * @var array
      */
     protected $blacklist = array(
         "divarea",
-        "copyformatting"
+        "copyformatting",
+        "ckawesome",
+        "ckeditortablecellsselection",
+        "enhancedcolorbutton",
+        "footnotes"
     );
 
 
@@ -171,7 +176,7 @@ class Manager
     }
 
     /**
-     * Returns all installed plugins
+     * Returns all installed (not active) plugins
      *
      * @return string[] - array of plugin names
      */
@@ -233,7 +238,29 @@ class Manager
             throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.extract.failed"));
         }
 
-        foreach (scandir($tmpDir . "/content") as $entry) {
+
+        // Scan dir and remove '.' and '..'
+        $contents = scandir($tmpDir . "/content");
+        foreach (array_keys($contents, ".", true) as $key) {
+            unset($contents[$key]);
+        }
+
+        foreach (array_keys($contents, "..", true) as $key) {
+            unset($contents[$key]);
+        }
+
+
+        // Check if the zip contains only one folder
+        if (count($contents) !== 1) {
+            throw new Exception(array(
+                "quiqqer/ckeditor4",
+                "exception.plugin.install.wrong.format"
+            ));
+        }
+
+
+        // Process the content
+        foreach ($contents as $entry) {
             if ($entry == "." || $entry == "..") {
                 continue;
             }
@@ -278,6 +305,13 @@ class Manager
     {
         $pluginName = Orthos::clearPath($pluginName);
         $pluginName = str_replace("/", "", $pluginName);
+
+        if (in_array($pluginName, $this->blacklist)) {
+            throw new Exception(array(
+                "quiqqer/ckeditor4",
+                "exception.plugin.activate.blacklisted"
+            ));
+        }
 
         if (!is_dir($this->installedPluginDir . "/" . $pluginName)) {
             throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.found"));
@@ -540,6 +574,11 @@ class Manager
         }
     }
 
+    /**
+     * Gets the plugin dirctory URL path
+     *
+     * @return mixed
+     */
     public function getPluginUrlPath()
     {
         // Build the web reachable path for the plugin directory

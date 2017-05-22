@@ -223,18 +223,12 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             Settings.getConfig().then(function (config) {
                 var plugins = config.plugins;
 
-                console.log(config);
-                console.log(plugins);
-
-
                 plugins = self.$parseToolbarToPlugins(toolbar).concat(plugins);
                 plugins = plugins.unique();
 
                 var pluginPath = config.pluginPath;
-
                 var extraPlugins = plugins.join(",");
 
-                console.log(extraPlugins);
 
                 for (var i = 0, len = plugins.length; i < len; i++) {
                     var pluginName = plugins[i];
@@ -252,7 +246,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     basePath                 : URL_DIR,
                     height                   : height,
                     width                    : width,
-                    //toolbar                  : toolbar,
+                    toolbar                  : toolbar,
                     allowedContent           : true,
                     extraAllowedContent      : 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
                     stylesSet                : styles,
