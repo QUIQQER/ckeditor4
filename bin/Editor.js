@@ -574,7 +574,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 dialogDefinition = ev.data.definition;
 
 
-            console.log(dialogName);
             /**
              * Image dialog
              */
@@ -582,7 +581,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 return ev;
             }
 
-            console.log(this);
 
             var oldOnShow = dialogDefinition.onShow;
 
@@ -745,7 +743,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             var self      = this,
                 oldOnShow = dialogDefinition.onShow;
 
-            console.log(self);
+
 
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function () {
@@ -864,7 +862,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
 
                 var Label = UrlGroup.getElement("label");
-                console.log(Label);
+
                 Label.setStyles({
                     width  : "100%",
                     display: "block"

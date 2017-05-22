@@ -29,12 +29,14 @@ class Manager
      * @var array
      */
     protected $blacklist = array(
-        "divarea",
-        "copyformatting",
         "ckawesome",
+        "copyformatting",
+        "crossreference",
         "ckeditortablecellsselection",
+        "divarea",
         "enhancedcolorbutton",
-        "footnotes"
+        "footnotes",
+        "textselection"
     );
 
 
