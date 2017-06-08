@@ -219,6 +219,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 URL_OPT_DIR + 'quiqqer/ckeditor4/bin/defaultWysiwyg.css'
             );
 
+            data.cssFiles.push(
+                URL_OPT_DIR + 'quiqqer/quiqqer/bin/css/fonts/font-awesome.min.css'
+            );
+
 
             Settings.getConfig().then(function (config) {
                 var plugins = config.plugins;

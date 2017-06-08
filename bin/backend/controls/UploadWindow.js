@@ -43,7 +43,7 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
 
             this.addEvents({
                 onOpen: this.$onOpen,
-                submit: this.$onSubmit
+                onSubmit: this.$onSubmit
             });
 
         },
@@ -52,8 +52,6 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
          * Calls the ajax function to get the labels from gitlab and sets up its controls.
          */
         $onOpen: function () {
-            var self = this;
-
             var Content = this.getContent();
 
             this.$Upload = new UploadForm({
@@ -61,7 +59,7 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
                 sendbutton  : false,
                 cancelbutton: false,
                 events      : {
-                    onComplete: self.$onComplete
+                    onComplete: this.$onComplete
                 },
                 styles      : {
                     height: '80%'
