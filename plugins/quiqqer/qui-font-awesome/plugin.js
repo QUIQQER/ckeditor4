@@ -1,14 +1,12 @@
 (function () {
     "use strict";
-    console.log(CKEDITOR);
+
 
 
     CKEDITOR.plugins.add('qui-font-awesome', {
         icons: "icon",
         lang : ['en', 'de'],
         init : function (editor) {
-            console.log("Init");
-
             this.$Editor = editor;
             var self     = this;
 
@@ -27,11 +25,9 @@
                         var window = new FontAwesomeDialog({});
 
                         window.addEvent("submit", function (dialog, selected) {
-                            console.log("Submit");
                             if (selected.length === 0) {
                                 return;
                             }
-                            console.log("Insert");
                             self.insertIcon(selected[0]);
 
                         });
