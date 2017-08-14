@@ -89,10 +89,15 @@ class Manager
                     continue;
                 }
 
+                $pluginName = $entry;
+                // Special case, because gitlab gets confused with the dirctory named "codeTag"
+                if ($entry == "code") {
+                    $pluginName= "codeTag";
+                }
                 # Check if/where the plugin is installed
-                $targetDir = $this->installedPluginDir . "/" . $entry;
-                if (is_dir($this->activePluginDir . "/" . $entry)) {
-                    $targetDir = $this->activePluginDir . "/" . $entry;
+                $targetDir = $this->installedPluginDir . "/" . $pluginName;
+                if (is_dir($this->activePluginDir . "/" . $pluginName)) {
+                    $targetDir = $this->activePluginDir . "/" . $pluginName;
                 }
 
                 if (is_dir($targetDir)) {
@@ -135,24 +140,31 @@ class Manager
             }
 
             foreach (scandir($srcDir) as $entry) {
+                if ($entry == "." || $entry == "..") {
+                    continue;
+                }
+                
+                $pluginName = $entry;
+                // Special case, because gitlab gets confused with the dirctory named "codeTag"
+                if ($entry == "code") {
+                    $pluginName= "codeTag";
+                }
+                
                 $targetDir = $this->installedPluginDir;
                 if (in_array($entry, $activePlugins)) {
                     $targetDir = $this->activePluginDir;
                 }
 
-                if ($entry == "." || $entry == "..") {
-                    continue;
-                }
 
                 if (!is_dir($srcDir . "/" . $entry)) {
                     continue;
                 }
 
-                if (is_dir($this->installedPluginDir . "/" . $entry)) {
+                if (is_dir($this->installedPluginDir . "/" . $pluginName)) {
                     continue;
                 }
 
-                if (is_dir($this->activePluginDir . "/" . $entry)) {
+                if (is_dir($this->activePluginDir . "/" . $pluginName)) {
                     continue;
                 }
 
@@ -160,9 +172,10 @@ class Manager
                     continue;
                 }
 
+                
                 $this->copyDir(
                     $srcDir . "/" . $entry,
-                    $targetDir . "/" . $entry
+                    $targetDir . "/" . $pluginName
                 );
             }
         }
