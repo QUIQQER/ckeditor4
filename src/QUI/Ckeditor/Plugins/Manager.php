@@ -169,9 +169,9 @@ class Manager
                     continue;
                 }
 
-                if (!is_dir($this->activePluginDir."/".$pluginName)) {
-                    continue;
-                }
+//                if (!is_dir($this->activePluginDir."/".$pluginName)) {
+//                    continue;
+//                }
 
                 if (in_array($entry, $this->blacklist)) {
                     continue;
