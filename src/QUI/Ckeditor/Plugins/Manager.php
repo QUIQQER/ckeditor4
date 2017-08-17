@@ -154,7 +154,7 @@ class Manager
                 }
 
                 $pluginName = $entry;
-                // Special case, because gitlab gets confused with the dirctory named "codeTag"
+                // Special case, because gitlab gets confused with the directory named "codeTag"
                 if ($entry == "code") {
                     $pluginName = "codeTag";
                 }
@@ -165,22 +165,20 @@ class Manager
                     $targetDir = $this->activePluginDir;
                 }
 
-
                 if (!is_dir($srcDir."/".$entry)) {
                     continue;
                 }
 
-                if (is_dir($this->installedPluginDir."/".$pluginName)) {
-                    continue;
-                }
-
-                if (is_dir($this->activePluginDir."/".$pluginName)) {
+                if (!is_dir($this->activePluginDir."/".$pluginName)) {
                     continue;
                 }
 
                 if (in_array($entry, $this->blacklist)) {
                     continue;
                 }
+
+                // vorher löschen, da sonst nicht kopiert werden kann
+                QUI::getTemp()->moveToTemp($targetDir."/".$pluginName);
 
                 $this->copyDir(
                     $srcDir."/".$entry,

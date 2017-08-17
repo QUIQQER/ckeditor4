@@ -16,7 +16,6 @@ use QUI\Package\Package;
  */
 class EventHandler
 {
-
     /**
      * @param Package $Package
      */
