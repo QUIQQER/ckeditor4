@@ -169,17 +169,19 @@ class Manager
                     continue;
                 }
 
-//                if (!is_dir($this->activePluginDir."/".$pluginName)) {
-//                    continue;
-//                }
+                if (is_dir($this->installedPluginDir."/".$pluginName)) {
+                    continue;
+                }
+                
+                if (is_dir($this->activePluginDir."/".$pluginName)) {
+                    continue;
+                }
 
                 if (in_array($entry, $this->blacklist)) {
                     continue;
                 }
 
-                // vorher löschen, da sonst nicht kopiert werden kann
-                QUI::getTemp()->moveToTemp($targetDir."/".$pluginName);
-
+                
                 $this->copyDir(
                     $srcDir."/".$entry,
                     $targetDir."/".$pluginName
