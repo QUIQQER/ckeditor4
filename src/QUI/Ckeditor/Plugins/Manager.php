@@ -1,9 +1,12 @@
 <?php
 
+/**
+ * This file contains QUI\Ckeditor\Plugins\Manager
+ */
 
 namespace QUI\Ckeditor\Plugins;
 
-use QUI\Archiver\Zip;
+use QUI;
 use QUI\Exception;
 use QUI\System\Log;
 use QUI\Utils\Security\Orthos;
@@ -16,12 +19,20 @@ use QUI\Utils\System\File;
  */
 class Manager
 {
-
+    /**
+     * @var string
+     */
     protected $activePluginDir;
+
+    /**
+     * @var string
+     */
     protected $installedPluginDir;
 
+    /**
+     * @var
+     */
     protected $dependencies;
-
 
     /**
      * List of plugins which should not be installed
@@ -39,15 +50,15 @@ class Manager
         "textselection"
     );
 
-
     /**
      * Manager constructor.
      */
     public function __construct()
     {
-        $this->activePluginDir    = \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "/plugins/bin";
-        $this->installedPluginDir = \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "/plugins/installed";
+        $Package = QUI::getPackage("quiqqer/ckeditor4");
 
+        $this->activePluginDir    = $Package->getVarDir()."/plugins/bin";
+        $this->installedPluginDir = $Package->getVarDir()."/plugins/installed";
 
         if (!is_dir($this->activePluginDir)) {
             mkdir($this->activePluginDir, 0755, true);
@@ -68,10 +79,9 @@ class Manager
     public function updatePlugins()
     {
         $srcDirs = array(
-            OPT_DIR . "ckeditor/ckeditor/plugins",
-            OPT_DIR . "quiqqer/ckeditor4/plugins/quiqqer",
-            OPT_DIR . "quiqqer/ckeditor4/plugins/ckeditor4",
-
+            OPT_DIR."ckeditor/ckeditor/plugins",
+            OPT_DIR."quiqqer/ckeditor4/plugins/quiqqer",
+            OPT_DIR."quiqqer/ckeditor4/plugins/ckeditor4"
         );
 
         foreach ($srcDirs as $srcDir) {
@@ -79,29 +89,34 @@ class Manager
                 return;
             }
 
-
             foreach (scandir($srcDir) as $entry) {
                 if ($entry == "." || $entry == "..") {
                     continue;
                 }
 
-                if (!is_dir($srcDir . "/" . $entry)) {
+                if (!is_dir($srcDir."/".$entry)) {
                     continue;
                 }
 
+                $pluginName = $entry;
+                // Special case, because gitlab gets confused with the dirctory named "codeTag"
+                if ($entry == "code") {
+                    $pluginName = "codeTag";
+                }
+
                 # Check if/where the plugin is installed
-                $targetDir = $this->installedPluginDir . "/" . $entry;
-                if (is_dir($this->activePluginDir . "/" . $entry)) {
-                    $targetDir = $this->activePluginDir . "/" . $entry;
+                $targetDir = $this->installedPluginDir."/".$pluginName;
+
+                if (is_dir($this->activePluginDir."/".$pluginName)) {
+                    $targetDir = $this->activePluginDir."/".$pluginName;
                 }
 
                 if (is_dir($targetDir)) {
                     File::deleteDir($targetDir);
                 }
 
-
                 File::dircopy(
-                    $srcDir . "/" . $entry,
+                    $srcDir."/".$entry,
                     $targetDir
                 );
             }
@@ -115,19 +130,18 @@ class Manager
     public function installPluginsFromSource()
     {
         $srcDirs = array(
-            OPT_DIR . "ckeditor/ckeditor/plugins",
-            OPT_DIR . "quiqqer/ckeditor4/plugins/quiqqer",
-            OPT_DIR . "quiqqer/ckeditor4/plugins/ckeditor4"
-
+            OPT_DIR."ckeditor/ckeditor/plugins",
+            OPT_DIR."quiqqer/ckeditor4/plugins/quiqqer",
+            OPT_DIR."quiqqer/ckeditor4/plugins/ckeditor4"
         );
 
         $activePlugins    = array();
-        $defaultStateFile = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/plugins/activePlugins.json";
+        $defaultStateFile = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/plugins/activePlugins.json";
+
         if (file_exists($defaultStateFile)) {
             $json          = file_get_contents($defaultStateFile);
             $activePlugins = json_decode($json, true);
         }
-
 
         foreach ($srcDirs as $srcDir) {
             if (!is_dir($srcDir)) {
@@ -135,24 +149,31 @@ class Manager
             }
 
             foreach (scandir($srcDir) as $entry) {
-                $targetDir = $this->installedPluginDir;
-                if (in_array($entry, $activePlugins)) {
-                    $targetDir = $this->activePluginDir;
-                }
-
                 if ($entry == "." || $entry == "..") {
                     continue;
                 }
 
-                if (!is_dir($srcDir . "/" . $entry)) {
+                $pluginName = $entry;
+                // Special case, because gitlab gets confused with the directory named "codeTag"
+                if ($entry == "code") {
+                    $pluginName = "codeTag";
+                }
+
+                $targetDir = $this->installedPluginDir;
+
+                if (in_array($entry, $activePlugins)) {
+                    $targetDir = $this->activePluginDir;
+                }
+
+                if (!is_dir($srcDir."/".$entry)) {
                     continue;
                 }
 
-                if (is_dir($this->installedPluginDir . "/" . $entry)) {
+                if (is_dir($this->installedPluginDir."/".$pluginName)) {
                     continue;
                 }
-
-                if (is_dir($this->activePluginDir . "/" . $entry)) {
+                
+                if (is_dir($this->activePluginDir."/".$pluginName)) {
                     continue;
                 }
 
@@ -160,17 +181,18 @@ class Manager
                     continue;
                 }
 
+                
                 $this->copyDir(
-                    $srcDir . "/" . $entry,
-                    $targetDir . "/" . $entry
+                    $srcDir."/".$entry,
+                    $targetDir."/".$pluginName
                 );
             }
         }
 
-        if (file_exists(OPT_DIR . "quiqqer/ckeditor4/plugins/dependencies.json")) {
+        if (file_exists(OPT_DIR."quiqqer/ckeditor4/plugins/dependencies.json")) {
             copy(
-                OPT_DIR . "quiqqer/ckeditor4/plugins/dependencies.json",
-                $this->getPluginDir() . "/dependencies.json"
+                OPT_DIR."quiqqer/ckeditor4/plugins/dependencies.json",
+                $this->getPluginDir()."/dependencies.json"
             );
         }
 
@@ -187,6 +209,7 @@ class Manager
         $result = array();
 
         $content = scandir($this->installedPluginDir);
+
         if ($content === false) {
             return array();
         }
@@ -195,13 +218,12 @@ class Manager
             if ($entry == "." || $entry == "..") {
                 continue;
             }
-            $fullpath = $this->installedPluginDir . "/" . $entry;
 
+            $fullpath = $this->installedPluginDir."/".$entry;
 
             if (!is_dir($fullpath)) {
                 continue;
             }
-
 
             $result[] = $entry;
         }
@@ -223,26 +245,26 @@ class Manager
             throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.not.found"));
         }
 
-        $tmpDir = \QUI::getTemp()->createFolder();
+        $tmpDir = QUI::getTemp()->createFolder();
+
         copy(
             $pluginpath,
-            $tmpDir . "/archive.zip"
+            $tmpDir."/archive.zip"
         );
-
 
         $Zip = new \ZipArchive();
 
-        if ($Zip->open($tmpDir . "/archive.zip") === false) {
+        if ($Zip->open($tmpDir."/archive.zip") === false) {
             throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.invalid.format"));
         }
 
-        if ($Zip->extractTo($tmpDir . "/content") === false) {
+        if ($Zip->extractTo($tmpDir."/content") === false) {
             throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.extract.failed"));
         }
 
 
         // Scan dir and remove '.' and '..'
-        $contents = scandir($tmpDir . "/content");
+        $contents = scandir($tmpDir."/content");
         foreach (array_keys($contents, ".", true) as $key) {
             unset($contents[$key]);
         }
@@ -267,25 +289,24 @@ class Manager
                 continue;
             }
 
-
-            if (is_dir($this->installedPluginDir . "/" . $entry)) {
+            if (is_dir($this->installedPluginDir."/".$entry)) {
                 throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.exists"));
             }
 
-            if (is_dir($this->activePluginDir . "/" . $entry)) {
+            if (is_dir($this->activePluginDir."/".$entry)) {
                 throw new Exception(array("quiqqer/ckeditor4", "exception.install.file.exists"));
             }
 
             rename(
-                $tmpDir . "/content/" . $entry,
-                $this->installedPluginDir . "/" . $entry
+                $tmpDir."/content/".$entry,
+                $this->installedPluginDir."/".$entry
             );
         }
 
         File::deleteDir($tmpDir);
 
-        \QUI::getMessagesHandler()->addSuccess(
-            \QUI::getLocale()->get(
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get(
                 "quiqqer/ckeditor4",
                 "message.plugin.install.success"
             )
@@ -315,15 +336,22 @@ class Manager
             ));
         }
 
-        if (!is_dir($this->installedPluginDir . "/" . $pluginName)) {
-            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.found"));
+        if (!is_dir($this->installedPluginDir."/".$pluginName)) {
+            throw new Exception(array(
+                "quiqqer/ckeditor4",
+                "exception.plugin.activate.plugin.not.found"
+            ));
         }
 
-        if (is_dir($this->activePluginDir . "/" . $pluginName)) {
-            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.already.active"));
+        if (is_dir($this->activePluginDir."/".$pluginName)) {
+            throw new Exception(array(
+                "quiqqer/ckeditor4",
+                "exception.plugin.already.active"
+            ));
         }
 
         $deps = $this->getDependencies($pluginName);
+
         foreach ($deps as $dep) {
             try {
                 $this->activate($dep);
@@ -331,10 +359,12 @@ class Manager
             }
         }
 
-        rename($this->installedPluginDir . "/" . $pluginName, $this->activePluginDir . "/" . $pluginName);
+        rename(
+            $this->installedPluginDir."/".$pluginName,
+            $this->activePluginDir."/".$pluginName
+        );
 
-
-        \QUI\Cache\Manager::clear("quiqqer/ckeditor/plugins/data");
+        QUI\Cache\Manager::clear("quiqqer/ckeditor/plugins/data");
     }
 
     /**
@@ -349,12 +379,15 @@ class Manager
         $pluginName = Orthos::clearPath($pluginName);
         $pluginName = str_replace("/", "", $pluginName);
 
-        if (!is_dir($this->activePluginDir . "/" . $pluginName)) {
-            throw new Exception(array("quiqqer/ckeditor4", "exception.plugin.activate.plugin.not.active"));
+        if (!is_dir($this->activePluginDir."/".$pluginName)) {
+            throw new Exception(array(
+                "quiqqer/ckeditor4",
+                "exception.plugin.activate.plugin.not.active"
+            ));
         }
 
-        if (is_dir($this->installedPluginDir . "/" . $pluginName)) {
-            File::deleteDir($this->activePluginDir . "/" . $pluginName);
+        if (is_dir($this->installedPluginDir."/".$pluginName)) {
+            File::deleteDir($this->activePluginDir."/".$pluginName);
 
             return;
         }
@@ -366,9 +399,12 @@ class Manager
             }
         }
 
-        rename($this->activePluginDir . "/" . $pluginName, $this->installedPluginDir . "/" . $pluginName);
+        rename(
+            $this->activePluginDir."/".$pluginName,
+            $this->installedPluginDir."/".$pluginName
+        );
 
-        \QUI\Cache\Manager::clear("quiqqer/ckeditor/plugins/data");
+        QUI\Cache\Manager::clear("quiqqer/ckeditor/plugins/data");
     }
 
     /**
@@ -378,9 +414,9 @@ class Manager
      */
     public function getActivePlugins()
     {
-        $result = array();
-
+        $result  = array();
         $content = scandir($this->activePluginDir);
+
         if ($content === false) {
             return array();
         }
@@ -389,7 +425,8 @@ class Manager
             if ($entry == "." || $entry == "..") {
                 continue;
             }
-            $fullpath = $this->activePluginDir . "/" . $entry;
+
+            $fullpath = $this->activePluginDir."/".$entry;
 
             if (!is_dir($fullpath)) {
                 continue;
@@ -429,12 +466,12 @@ class Manager
         }
 
         $deps = $this->dependencies[$pluginName];
+
         foreach ($deps as $dep) {
             $result[] = $dep;
 
             $subDeps = $this->getDependencies($dep);
-
-            $result = array_merge($result, $subDeps);
+            $result  = array_merge($result, $subDeps);
         }
 
         $result = array_unique($result);
@@ -460,7 +497,6 @@ class Manager
             return false;
         }
 
-
         foreach ($this->dependencies as $pkg => $deps) {
             if (in_array($pluginName, $deps)) {
                 $result[] = $pkg;
@@ -483,13 +519,13 @@ class Manager
             return;
         }
 
-        if (!file_exists($this->getPluginDir() . "/dependencies.json")) {
-            Log::addWarning("Missing dependency file: " . $this->getPluginDir() . "/dependencies.json");
+        if (!file_exists($this->getPluginDir()."/dependencies.json")) {
+            Log::addWarning("Missing dependency file: ".$this->getPluginDir()."/dependencies.json");
 
             throw new Exception("missing.dependency.file");
         }
 
-        $json = file_get_contents($this->getPluginDir() . "/dependencies.json");
+        $json = file_get_contents($this->getPluginDir()."/dependencies.json");
         $deps = json_decode($json, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -543,7 +579,7 @@ class Manager
      */
     public function getPluginDir()
     {
-        return \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "/plugins";
+        return QUI::getPackage("quiqqer/ckeditor4")->getVarDir()."/plugins";
     }
 
     /**
@@ -565,14 +601,14 @@ class Manager
                 continue;
             }
 
-            $fullpath = $src . "/" . $entry;
+            $fullpath = $src."/".$entry;
 
             if (is_dir($fullpath)) {
-                $this->copyDir($fullpath, $target . "/" . $entry);
+                $this->copyDir($fullpath, $target."/".$entry);
                 continue;
             }
 
-            copy($fullpath, $target . "/" . $entry);
+            copy($fullpath, $target."/".$entry);
         }
     }
 
@@ -584,7 +620,7 @@ class Manager
     public function getPluginUrlPath()
     {
         // Build the web reachable path for the plugin directory
-        $pluginPath = \QUI::getPackage("quiqqer/ckeditor4")->getVarDir() . "plugins";
+        $pluginPath = QUI::getPackage("quiqqer/ckeditor4")->getVarDir()."plugins";
         $varParent  = dirname(VAR_DIR);
 
         # Parse the URL directory

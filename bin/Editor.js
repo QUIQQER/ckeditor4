@@ -122,7 +122,6 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 Textarea  = false,
                 size      = Container.getSize();
 
-
             if (!Container.getElement('textarea')) {
                 Textarea = new Element('textarea', {
                     id    : self.getId(),
@@ -233,14 +232,19 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 var pluginPath   = config.pluginPath;
                 var extraPlugins = plugins.join(",");
 
+                var i, len, pluginName;
 
-                for (var i = 0, len = plugins.length; i < len; i++) {
-                    var pluginName = plugins[i];
+                for (i = 0, len = plugins.length; i < len; i++) {
+                    pluginName = plugins[i];
+
                     if (!window.CKEDITOR.plugins.get(pluginName)) {
-                        window.CKEDITOR.plugins.addExternal(pluginName, pluginPath + "/bin/" + pluginName + "/", "");
+                        window.CKEDITOR.plugins.addExternal(
+                            pluginName,
+                            pluginPath + "/bin/" + pluginName + "/",
+                            ""
+                        );
                     }
                 }
-
 
                 window.CKEDITOR.replace(instance, {
                     skinName                 : 'moono-lisa',
@@ -252,7 +256,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     width                    : width,
                     toolbar                  : toolbar,
                     allowedContent           : true,
-                    extraAllowedContent      : 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}',
+                    extraAllowedContent      : 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}; ins(*)[*]{*}',
+                    protectedSource          : [/<ins[\s|\S]+?<\/ins>/g],
                     stylesSet                : styles,
                     contentsCss              : data.cssFiles || [],
                     bodyClass                : data.bodyClass,
@@ -260,10 +265,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     baseFloatZIndex          : zIndex,
                     extraPlugins             : extraPlugins,
                     //removePlugins            : 'scayt',
-                    disableNativeSpellChecker: config.disableNativeSpellChecker
+                    disableNativeSpellChecker: config.disableNativeSpellChecker,
+                    autoGrow_onStartup       : false,
+                    resize_enabled           : false
                 });
-
-
             });
 
         },
@@ -561,7 +566,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                         extra.push('codetag');
                         break;
                     case 'Image':
-                        extra.push('image2');
+                        extra.push('image');
                         break;
                     case 'Zoom':
                         extra.push('zoom');
@@ -650,11 +655,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 dialogName       = ev.data.name,
                 dialogDefinition = ev.data.definition;
 
-
             /**
              * Image dialog
              */
-            if (dialogName != 'image') {
+            if (dialogName !== 'image') {
                 return ev;
             }
 
@@ -669,19 +673,23 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 // image button
                 var UrlGroup = this.getContentElement('info', 'txtUrl')
-                    .getElement()
-                    .$;
+                                   .getElement().$;
 
                 var UrlInput = UrlGroup.getElement('input[type="text"]');
 
                 var HeightInput = this.getContentElement('info', 'txtHeight')
-                    .getElement().$
-                    .getElement('input[type="text"]');
+                                      .getElement().$
+                                      .getElement('input[type="text"]');
 
                 var WidthInput = this.getContentElement('info', 'txtWidth')
-                    .getElement().$
-                    .getElement('input[type="text"]');
+                                     .getElement().$
+                                     .getElement('input[type="text"]');
 
+
+                UrlGroup.getElement('label').setStyles({
+                    'float': 'left',
+                    'width': '100%'
+                });
 
                 if (!UrlGroup.getElement('.qui-button')) {
                     Button = new Element('button', {
@@ -737,7 +745,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
 
                 // link button
                 var LinkGroup = this.getContentElement('Link', 'txtUrl')
-                    .getElement()
+                                    .getElement()
                     .$;
 
 
@@ -806,10 +814,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 orgCommit.call(this, data);
 
                 Protokoll = dialogDefinition.dialog
-                    .getContentElement('info', 'protocol')
-                    .getElement()
-                    .$
-                    .getElement('select');
+                                            .getContentElement('info', 'protocol')
+                                            .getElement()
+                                            .$
+                                            .getElement('select');
 
                 data.url = {
                     protocol: Protokoll.value,
@@ -826,7 +834,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 oldOnShow.bind(this)();
 
                 var UrlGroup = this.getContentElement('info', 'url')
-                    .getElement()
+                                   .getElement()
                     .$;
 
                 if (UrlGroup.getElement('.qui-button')) {
@@ -836,9 +844,9 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 var UrlInput = UrlGroup.getElement('input[type="text"]');
 
                 Protokoll = this.getContentElement('info', 'protocol')
-                    .getElement()
-                    .$
-                    .getElement('select');
+                                .getElement()
+                                .$
+                                .getElement('select');
 
                 UrlInput.setStyles({
                     'float': 'left',
@@ -903,7 +911,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             var self = this;
 
             var oldOnShow = dialogDefinition.onShow || function () {
-                };
+            };
 
             dialogDefinition.onShow = function () {
                 oldOnShow.bind(this)();
@@ -967,7 +975,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             var self = this;
 
             var oldOnShow = dialogDefinition.onShow || function () {
-                };
+            };
 
             dialogDefinition.onShow = function () {
                 oldOnShow.bind(this)();

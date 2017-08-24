@@ -1,14 +1,21 @@
 <?php
 
+/**
+ * This file contains QUI\Ckeditor\EventHandler
+ */
+
 namespace QUI\Ckeditor;
 
 use QUI\Ckeditor\Plugins\Manager;
 use QUI\Package\Package;
-use QUI\System\Log;
 
+/**
+ * Class EventHandler
+ *
+ * @package QUI\Ckeditor
+ */
 class EventHandler
 {
-
     /**
      * @param Package $Package
      */
@@ -19,7 +26,6 @@ class EventHandler
         }
 
         $PluginManager = new Manager();
-
         $PluginManager->installPluginsFromSource();
     }
 
@@ -33,7 +39,6 @@ class EventHandler
         }
 
         $PluginManager = new Manager();
-
         $PluginManager->updatePlugins();
     }
 }
