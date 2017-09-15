@@ -591,7 +591,7 @@ class Manager
     public function copyDir($src, $target)
     {
         if (!is_dir($target)) {
-            mkdir($target, 0755);
+            mkdir($target, 0755, true);
         }
 
         $entries = scandir($src);
