@@ -31,11 +31,8 @@ class EventHandler
         // ----- Begin tempfix -----
         // This is a temporary fix for updating the systems
         // there was a bug in the utils package which compromised the update process of the ckeditor, thus rendering the ckeditor useless
-        echo "Checking: " . VAR_DIR . "package/quiqqer/ckeditor4/plugins/bin/image/dialogs/image.js" . PHP_EOL;
+        
         if (!file_exists(VAR_DIR . "package/quiqqer/ckeditor4/plugins/bin/image/dialogs/image.js")) {
-            echo "Does not exist!" . PHP_EOL;
-
-//            File::deleteDir(VAR_DIR . "package/quiqqer/ckeditor4/plugins");
             $newFolder = VAR_DIR . "package/quiqqer/ckeditor4/plugins." . time() . ".bak";
             rename(
                 VAR_DIR . "package/quiqqer/ckeditor4/plugins",
