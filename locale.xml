@@ -7,7 +7,7 @@
             <en><![CDATA[QUIQQER - CKEditor integration]]></en>
         </locale>
         <locale name="package.description">
-            <de><![CDATA[Integration den CKEditor in QUIQQER.]]></de>
+            <de><![CDATA[Integration des CKEditor in QUIQQER.]]></de>
             <en><![CDATA[Integrate the CKEditor into QUIQQER.]]></en>
         </locale>
         <locale name="exception.plugin.activate.plugin.not.found">

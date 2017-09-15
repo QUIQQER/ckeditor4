@@ -710,18 +710,18 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                                                         fileData.image_width,
                                                         500
                                                     );
-
-                                                    HeightInput.value = result.var1;
-                                                    WidthInput.value  = result.var2;
-
+                                                    // es darf keine image height gesetzt
+                                                    // da das Bild sonst im mobile view sich verzieht
+                                                    // HeightInput.value = result.var1;
+                                                    WidthInput.value = result.var2;
                                                 } else {
-                                                    HeightInput.value = fileData.image_height;
-                                                    WidthInput.value  = fileData.image_width;
+                                                    // HeightInput.value = fileData.image_height;
+                                                    WidthInput.value = fileData.image_width;
                                                 }
 
-                                                if (!fileData.image_height) {
-                                                    HeightInput.value = '';
-                                                }
+                                                // if (!fileData.image_height) {
+                                                //     HeightInput.value = '';
+                                                // }
 
                                                 if (!fileData.image_width) {
                                                     WidthInput.value = '';
