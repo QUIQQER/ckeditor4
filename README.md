@@ -1,64 +1,71 @@
+![Readme.jpg](bin/images/Readme.jpg)
+
 QUIQQER CKEditor 4 Bridge
 ========
 
-Paketname:
+Packagename:
 
     quiqqer/ckeditor4
 
 
-Features (Funktionen)
---------
+Features 
+----------
 
 - CKEditor4 für QUIQQER
 
 
-Pluginverwaltung
---------
+CKEditor Plugin Management
+--------------------------
 
-Das Paket liefert eine Pluginverwaltung für CKEditor Plugins ([Plugin Store](http://ckeditor.com/addons/plugins/all)).
+The package adds a management interface for CKEditor plugin ([Plugin Store](http://ckeditor.com/addons/plugins/all)).
 
-Das Paket liefert eine Auswahl von Plugins mit, diese werden in zwei Ordnern im Paket mitgelifert:
-* ckeditor4/plugins/ckeditor4 (Plugins aus dem Pluginstore)
-* ckeditor4/plugins/quiqqer (Von PCSG für QUIQQER entwickelte Editorplugins)
+Some plugins will be bundled with this package by default. They get distributed in two directories:
+* ckeditor4/plugins/ckeditor4 (Plugins from the plufin store)
+* ckeditor4/plugins/quiqqer (Plugins that were developed for QUIQQER by PCSG)
 
-Bei einem Paketsetup werden diese Plugins in das entsprechende QUIQQER-System installiert.
+These plugins will get moved into the correct directories of your QUIQQER installation during the package setup.
 
-Zu finden sind die installiert Pakete im "Var-Verzeichnis":
+You can find your installed plugins in the `var`-directory:
 
-* \<CMD_DIR>/var/package/quiqqer/ckedito4/plugins/installed (Installiert, aber inaktiv)
-* \<CMD_DIR>/var/package/quiqqer/ckedito4/plugins/bin (Installiert und aktiviert)
-
-
-Die Pluginverwaltung kann im Adminbereich unter `Einstellungen -> CKEditor` aufgerufen werden:
+* \<CMD_DIR>/var/package/quiqqer/ckedito4/plugins/installed (Installed,but deactivated)
+* \<CMD_DIR>/var/package/quiqqer/ckedito4/plugins/bin (Installed and active)
 
 
-Plugins installieren
--------
+You can open the plugin management in QUIQQERs Admin interface `Settings -> CKEditor`:
 
-Um zusätzliche Plugins zu installieren rufen Sie bitte die pluginverwaltung auf:   
-`ADMINBEREICH -> Einstellungen -> CKEditor`  
 
-1) Dort finden Sie eine Schaltfläche `Hochladen`.
-2) Wählen Sie die Schaltfläche `Datei auswählen`
-3) Selektieren Sie ein ZIP-Archiv im korrekten Format*
-4) Betätigen Sie `Hochladen`
-5) Das Plugin wird hochgeladen und installiert
+Install plugins
+---------------
 
-__**Das korrekte ZIP-Archiv Format:**__  
+Open the plugin manager in your QUIQQER admin interface:   
+`Adminarea -> Settings -> CKEditor`  
 
-Das ZIP muss in einem bestimmten Format aufgebaut sein.
+1) Press the `Upload` button.
+2) Press `Select file`
+3) Pick an archive in the correct format*
+4) Confirm with `Upload`
+5) The plugin gets uploaded and installed
 
-Folgende Struktur muss eingehalten werden:  
-Das ZIP-Archiv darf in der ersten Ebene nur einen Ordner enthalten, der den Namen des Plugins trägt.  
-In diesem Ordner sind die Plugindateien enthalten. 
+__**The correct ZIP-Archive format:**__  
+
+The ZIP-File needs to be in a certain format to be valid.
+
+Following directory structure needs to be adhered:  
+The first directory level must only contain one directory named like the plugin.  
+The plugin files are within that directory.
 
 Installation
 ------------
 
-Der Paketname ist: quiqqer/ckeditor4
+The package name is: quiqqer/ckeditor4
+
+Install with composer:
+```
+composer require quiqqer/ckeditor4
+```
 
 
-Mitwirken
+Contribute
 ----------
 
 - Issue Tracker: https://dev.quiqqer.com/quiqqer/ckeditor4/issues
@@ -68,8 +75,8 @@ Mitwirken
 Support
 -------
 
-Falls Sie ein Fehler gefunden haben, oder Verbesserungen wünschen,
-dann können Sie gerne an support@pcsg.de eine E-Mail schreiben.
+Feel free to send us an email, if you encountered an error,want to provide feedback or suggest an idea.
+Our E-Mail is: support@pcsg.de
 
 
 Lizenz
@@ -77,5 +84,3 @@ Lizenz
 
 - GPL-2.0+
 
-Entwickler
---------
