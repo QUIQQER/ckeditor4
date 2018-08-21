@@ -18,7 +18,7 @@
     "require": {
         "quiqqer\/quiqqer": "*",
         "quiqqer\/qui": ">=1|dev-master|dev-dev",
-        "ckeditor\/ckeditor": "4.6.*"
+        "ckeditor\/ckeditor": "4.10.*"
     },
     "autoload": {
         "psr-4": {
