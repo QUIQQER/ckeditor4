@@ -13,7 +13,9 @@
 
 
         <window>
-            <title>CKEditor</title>
+            <title>
+                <locale group="quiqqer/ckeditor4" var="editors.settings.title"/>
+            </title>
             <params>
                 <icon>fa fa-file-text</icon>
             </params>
@@ -48,10 +50,18 @@
                                type="hidden"
                                data-qui="package/quiqqer/ckeditor4/bin/backend/controls/settings/Plugins"
                         />
-
                     </settings>
-
                 </category>
+
+                <category name="toolbars"
+                          require="package/quiqqer/ckeditor4/bin/backend/utils/openSettings"
+                >
+                    <text>
+                        <locale group="quiqqer/ckeditor4" var="editors.settings.toolbars"/>
+                    </text>
+                    <icon>fa fa-font</icon>
+                </category>
+
 
             </categories>
         </window>

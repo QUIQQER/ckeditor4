@@ -10,6 +10,10 @@
             <de><![CDATA[Integration des CKEditor in QUIQQER.]]></de>
             <en><![CDATA[Integrate the CKEditor into QUIQQER.]]></en>
         </locale>
+        <locale name="editors.settings.title">
+            <de><![CDATA[Inhaltseditor (CKEditor)]]></de>
+            <en><![CDATA[Content editor (CKEditor)]]></en>
+        </locale>
         <locale name="exception.plugin.activate.plugin.not.found">
             <de><![CDATA[Das angegeben Plugin wurde nicht gefunden.]]></de>
             <en><![CDATA[The provided plugin was not found.]]></en>
@@ -116,6 +120,11 @@
             <en>
                 <![CDATA[Attention: You are installing software by third party authors. These can damage your system.]]>
             </en>
+        </locale>
+
+        <locale name="editors.settings.toolbars">
+            <de><![CDATA[Toolbar Verwaltung]]></de>
+            <en><![CDATA[Toolbar Administration]]></en>
         </locale>
 
         <!-- Permissions -->

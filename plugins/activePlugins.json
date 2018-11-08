@@ -1,7 +1,6 @@
 [
   "about",
   "ajax",
-  "autoembed",
   "autolink",
   "balloonpanel",
   "clipboard",
@@ -13,7 +12,6 @@
   "dialogadvtab",
   "div",
   "embed",
-  "embedbase",
   "find",
   "font",
   "html5audio",
