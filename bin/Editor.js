@@ -829,6 +829,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 oldOnShow = dialogDefinition.onShow;
 
 
+            self.$turnLinkRelInputToSelect(dialogDefinition);
+
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function () {
                 oldOnShow.bind(this)();
@@ -1013,6 +1015,51 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             };
 
             return ev;
+        },
+
+        /**
+         * Turns the "relation" text-input to a select-input.
+         * Returns as a boolean if the operation was successful.
+         *
+         * @see "quiqqer/ckeditor4#28"
+         *
+         * @param DialogDefinition
+         *
+         * @return boolean
+         */
+        $turnLinkRelInputToSelect: function(DialogDefinition) {
+            var AdvancedTab   = DialogDefinition.getContents("advanced");
+
+            if (!AdvancedTab) {
+                return false;
+            }
+
+            var RelationInput = AdvancedTab.get('advRel');
+
+            if (!RelationInput) {
+                return false;
+            }
+
+            if (RelationInput) {
+                RelationInput.type = 'select';
+                RelationInput.items = [
+                    ['alternate'],
+                    ['author'],
+                    ['bookmark'],
+                    ['external'],
+                    ['help'],
+                    ['license'],
+                    ['next'],
+                    ['nofollow'],
+                    ['noreferrer'],
+                    ['noopener'],
+                    ['prev'],
+                    ['search'],
+                    ['tag']
+                ];
+            }
+
+            return true;
         }
 
     });
