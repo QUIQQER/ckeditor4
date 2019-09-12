@@ -829,6 +829,27 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                 oldOnShow = dialogDefinition.onShow;
 
 
+            // Turn "relation" text-input to a select-input (quiqqer/ckeditor4#28)
+            var RelationInput = dialogDefinition.getContents("advanced").get('advRel');
+
+            RelationInput.type = 'select';
+            RelationInput.items = [
+                ['alternate'],
+                ['author'],
+                ['bookmark'],
+                ['external'],
+                ['help'],
+                ['license'],
+                ['next'],
+                ['nofollow'],
+                ['noreferrer'],
+                ['noopener'],
+                ['prev'],
+                ['search'],
+                ['tag']
+            ];
+
+
             // Get a reference to the "Link Info" tab.
             dialogDefinition.onShow = function () {
                 oldOnShow.bind(this)();
