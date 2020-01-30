@@ -2,7 +2,7 @@
     "name": "quiqqer\/ckeditor4",
     "type": "quiqqer-module",
     "description": "CKEditor for the QUIQQER CMS - enable the ckeditor for quiqqer",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Henning Leutz",
