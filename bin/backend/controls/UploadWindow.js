@@ -1,12 +1,15 @@
+/**
+ * @module package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow
+ */
 define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
 
     'qui/QUI',
     'qui/controls/windows/Confirm',
     'Locale',
     'controls/upload/Form'
+
 ], function (QUI, QUIConfirm, QUILocale, UploadForm) {
     "use strict";
-
 
     return new Class({
 
@@ -42,10 +45,9 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
             this.parent(options);
 
             this.addEvents({
-                onOpen: this.$onOpen,
+                onOpen  : this.$onOpen,
                 onSubmit: this.$onSubmit
             });
-
         },
 
         /**
@@ -71,22 +73,28 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
 
             this.$Upload.inject(Content);
 
-            var description = new Element("div", {
+            new Element("div", {
                 "html" : QUILocale.get("quiqqer/ckeditor4", "message.settings.upload.warning.external"),
                 "class": "content-message-attention",
                 "style": "margin-top: 10px;"
-            });
-            description.inject(Content);
-
+            }).inject(Content);
         },
 
-
+        /**
+         * event: on complete
+         */
         $onSubmit: function () {
             this.$Upload.submit();
         },
 
+        /**
+         * event: on complete
+         *
+         * @param Form
+         * @param File
+         * @param result
+         */
         $onComplete: function (Form, File, result) {
-
             QUI.MessageHandler.addSuccess(
                 QUILocale.get("quiqqer/ckeditor4", "message.window.upload.complete")
             );
@@ -95,6 +103,5 @@ define('package/quiqqer/ckeditor4/bin/backend/controls/UploadWindow', [
 
             this.close();
         }
-
     });
 });
