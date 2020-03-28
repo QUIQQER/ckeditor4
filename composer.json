@@ -3,6 +3,7 @@
     "type": "quiqqer-module",
     "description": "CKEditor for the QUIQQER CMS - enable the ckeditor for quiqqer",
     "license": "GPL-2.0-or-later",
+    "version": "2.2.0",
     "authors": [
         {
             "name": "Henning Leutz",
