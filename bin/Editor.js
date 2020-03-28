@@ -256,7 +256,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     width                    : width,
                     toolbar                  : toolbar,
                     allowedContent           : true,
-                    extraAllowedContent      : 'div(*)[*]{*}; iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}; ins(*)[*]{*}',
+                    extraAllowedContent      : 'iframe(*)[*]{*}; img(*)[*]{*}; script(*)[*]{*}; ins(*)[*]{*}',
                     protectedSource          : [/<ins[\s|\S]+?<\/ins>/g],
                     stylesSet                : styles,
                     contentsCss              : data.cssFiles || [],
@@ -269,6 +269,10 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
                     autoGrow_onStartup       : false,
                     resize_enabled           : false
                 });
+
+                // because of font awesome
+                window.CKEDITOR.dtd.$removeEmpty.span = false;
+                window.CKEDITOR.dtd.$removeEmpty.i    = false;
             });
 
         },
@@ -1027,8 +1031,8 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
          *
          * @return boolean
          */
-        $turnLinkRelInputToSelect: function(DialogDefinition) {
-            var AdvancedTab   = DialogDefinition.getContents("advanced");
+        $turnLinkRelInputToSelect: function (DialogDefinition) {
+            var AdvancedTab = DialogDefinition.getContents("advanced");
 
             if (!AdvancedTab) {
                 return false;
@@ -1041,7 +1045,7 @@ define('package/quiqqer/ckeditor4/bin/Editor', [
             }
 
             if (RelationInput) {
-                RelationInput.type = 'select';
+                RelationInput.type  = 'select';
                 RelationInput.items = [
                     ['alternate'],
                     ['author'],
